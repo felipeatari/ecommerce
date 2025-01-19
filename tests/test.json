@@ -1,0 +1,110 @@
+[
+    {
+        "id": 1,
+        "name": "PAC",
+        "price": "20.97",
+        "custom_price": "20.97",
+        "discount": "4.42",
+        "currency": "R$",
+        "delivery_time": 13,
+        "delivery_range": {
+            "min": 12,
+            "max": 13
+        },
+        "custom_delivery_time": 13,
+        "custom_delivery_range": {
+            "min": 12,
+            "max": 13
+        },
+        "packages": [
+            {
+                "price": "20.97",
+                "discount": "4.42",
+                "format": "box",
+                "weight": "0.10",
+                "insurance_value": "80.00",
+                "products": [
+                    {
+                        "id": "1003",
+                        "quantity": 1
+                    }
+                ],
+                "dimensions": {
+                    "height": 0.4,
+                    "width": 8,
+                    "length": 13
+                }
+            }
+        ],
+        "additional_services": {
+            "receipt": false,
+            "own_hand": false,
+            "collect": false
+        },
+        "additional": {
+            "unit": {
+                "price": 0,
+                "delivery": 0
+            }
+        },
+        "company": {
+            "id": 1,
+            "name": "Correios",
+            "picture": "https://www.melhorenvio.com.br/images/shipping-companies/correios.png"
+        }
+    },
+    {
+        "id": 2,
+        "name": "SEDEX",
+        "price": "24.14",
+        "custom_price": "24.14",
+        "discount": "2.75",
+        "currency": "R$",
+        "delivery_time": 11,
+        "delivery_range": {
+            "min": 10,
+            "max": 11
+        },
+        "custom_delivery_time": 11,
+        "custom_delivery_range": {
+            "min": 10,
+            "max": 11
+        },
+        "packages": [
+            {
+                "price": "24.14",
+                "discount": "2.75",
+                "format": "box",
+                "weight": "0.10",
+                "insurance_value": "80.00",
+                "products": [
+                    {
+                        "id": "1003",
+                        "quantity": 1
+                    }
+                ],
+                "dimensions": {
+                    "height": 0.4,
+                    "width": 8,
+                    "length": 13
+                }
+            }
+        ],
+        "additional_services": {
+            "receipt": false,
+            "own_hand": false,
+            "collect": false
+        },
+        "additional": {
+            "unit": {
+                "price": 0,
+                "delivery": 0
+            }
+        },
+        "company": {
+            "id": 1,
+            "name": "Correios",
+            "picture": "https://www.melhorenvio.com.br/images/shipping-companies/correios.png"
+        }
+    }
+]
