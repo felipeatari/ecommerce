@@ -63,6 +63,7 @@ class Show extends Component
 
     public function mountShowProduct(array $sku)
     {
+        // Teste
         $this->addProductCart = [];
 
         foreach ($this->productImage as $image):
