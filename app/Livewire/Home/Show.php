@@ -28,6 +28,7 @@ class Show extends Component
     public array $addProductCart = [];
     public ?string $selectedColor = '';
     public ?string $selectedSize = '';
+    public array $selectedSizes = [];
     public int|float $productPrice = 0;
     public array $variations = [];
     public int $stock = 0;
@@ -74,10 +75,14 @@ class Show extends Component
             }
         endforeach;
 
-        $this->selectedSize = $sku['size'];
-        $this->productPrice = $sku['price'];
-        $this->stock = $sku['stock'];
-        $this->selectedColorId = $sku['colorId'];
+        // dump($sku);
+
+        // if (in_array($this->selectedSize, $this->selectedSizes[$sku['sku_id']])) {
+            $this->selectedSize = $sku['size'];
+            $this->productPrice = $sku['price'];
+            $this->stock = $sku['stock'];
+            $this->selectedColorId = $sku['colorId'];
+        // }
 
         $this->addProductCart['id'] = $this->product->id;
         $this->addProductCart['sku_id'] = $sku['sku_id'];
@@ -145,6 +150,8 @@ class Show extends Component
                 'stock' => $sku->stock,
                 'colorId' => $sku->variation_id_1,
             ];
+
+            $this->selectedSizes[$sku->id][] = $sku->variation2->value;
         endforeach;
 
         ksort($this->selecteSizes);
