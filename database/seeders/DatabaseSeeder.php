@@ -31,29 +31,26 @@ class DatabaseSeeder extends Seeder
 
         $categories = ['Roupa', 'Acessorio', 'Calcado'];
 
-        for ($i = 0; $i <= 2; $i++):
-
-            $category = $categories[$i];
-
+        foreach ($categories as $key => $category):
             if (! Category::where('name', $category)->exists()) {
                 Category::factory()->create([ 'name' => $category, 'parent' => null ]);
             }
-        endfor;
+        endforeach;
 
         // Category::factory(10)->create();
 
-        // Category::all()->each(function(Category $category) {
-        // //     if ($category->id > 5) {
-        // //         $category->parent = random_int(1, 5);
-        // //         $category->save();
-        // //     }
+        Category::all()->each(function(Category $category) {
+        //     if ($category->id > 5) {
+        //         $category->parent = random_int(1, 5);
+        //         $category->save();
+        //     }
 
-        // //     $qntProduct = random_int(1, 10);
-        //     $qntProduct = random_int(1, 3);
+        //     $qntProduct = random_int(1, 10);
+            $qntProduct = random_int(1, 3);
 
-        // //     Product::factory()->count($qntProduct)->create(['category_id' => random_int(1000, 1003)]);
-        //     Product::factory()->count($qntProduct)->create(['category_id' => 1000]);
-        // });
+        //     Product::factory()->count($qntProduct)->create(['category_id' => random_int(1000, 1003)]);
+            Product::factory()->count($qntProduct)->create(['category_id' => 1000]);
+        });
 
         // Product::factory(3)->create();
 

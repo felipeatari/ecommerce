@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'category_id',
@@ -16,6 +17,13 @@ class Product extends Model
         'slug',
         'brand',
         'active',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
+
+    protected $dates = [
+        'deleted_at',
     ];
 
     public function category()
