@@ -36,83 +36,83 @@ class DatabaseSeeder extends Seeder
             $category = $categories[$i];
 
             if (! Category::where('name', $category)->exists()) {
-                Category::factory()->create([ 'name' => $category ]);
+                Category::factory()->create([ 'name' => $category, 'parent' => null ]);
             }
         endfor;
 
         // Category::factory(10)->create();
 
-        Category::all()->each(function(Category $category) {
-        //     if ($category->id > 5) {
-        //         $category->parent = random_int(1, 5);
-        //         $category->save();
-        //     }
+        // Category::all()->each(function(Category $category) {
+        // //     if ($category->id > 5) {
+        // //         $category->parent = random_int(1, 5);
+        // //         $category->save();
+        // //     }
 
-        //     $qntProduct = random_int(1, 10);
-            $qntProduct = random_int(1, 3);
+        // //     $qntProduct = random_int(1, 10);
+        //     $qntProduct = random_int(1, 3);
 
-        //     Product::factory()->count($qntProduct)->create(['category_id' => random_int(1000, 1003)]);
-            Product::factory()->count($qntProduct)->create(['category_id' => 1000]);
-        });
+        // //     Product::factory()->count($qntProduct)->create(['category_id' => random_int(1000, 1003)]);
+        //     Product::factory()->count($qntProduct)->create(['category_id' => 1000]);
+        // });
 
         // Product::factory(3)->create();
 
-        for ($i = 0; $i <= 7; $i++):
-            $typeVariation = 'color';
+        // for ($i = 0; $i <= 7; $i++):
+        //     $typeVariation = 'color';
 
-            $valueVariations = ['Azul', 'Vermelho', 'Preto', 'Branco', 'Laranja', 'Cinza', 'Verde', 'Amarelo'];
-            $codeVariations = ['#0000FF', '#FF0000', '#000000', '#FFFFFF', '#FFA500', '#646464', '#00FF00', '#FFFF00'];
+        //     $valueVariations = ['Azul', 'Vermelho', 'Preto', 'Branco', 'Laranja', 'Cinza', 'Verde', 'Amarelo'];
+        //     $codeVariations = ['#0000FF', '#FF0000', '#000000', '#FFFFFF', '#FFA500', '#646464', '#00FF00', '#FFFF00'];
 
-            $valueVariation = $valueVariations[$i];
-            $codeVariation = $codeVariations[$i];
+        //     $valueVariation = $valueVariations[$i];
+        //     $codeVariation = $codeVariations[$i];
 
-            if (! Variation::where('type', $typeVariation)->where('value', $valueVariation)->exists()) {
-                Variation::factory()->create([
-                    'type' => $typeVariation,
-                    'value' => $valueVariation,
-                    'code' => $codeVariation,
-                ]);
-            }
-        endfor;
+        //     if (! Variation::where('type', $typeVariation)->where('value', $valueVariation)->exists()) {
+        //         Variation::factory()->create([
+        //             'type' => $typeVariation,
+        //             'value' => $valueVariation,
+        //             'code' => $codeVariation,
+        //         ]);
+        //     }
+        // endfor;
 
-        for ($i = 0; $i <= 4; $i++):
-            $typeVariation = 'size';
+        // for ($i = 0; $i <= 4; $i++):
+        //     $typeVariation = 'size';
 
-            $sizeVariations = ['PP', 'P', 'M', 'G', 'GG'];
-            $codeVariations = ['1', '2', '3', '4', '5'];
+        //     $sizeVariations = ['PP', 'P', 'M', 'G', 'GG'];
+        //     $codeVariations = ['1', '2', '3', '4', '5'];
 
-            $valueVariation = $sizeVariations[$i];
-            $codeVariation = $codeVariations[$i];
+        //     $valueVariation = $sizeVariations[$i];
+        //     $codeVariation = $codeVariations[$i];
 
-            if (! Variation::where('type', $typeVariation)->where('value', $valueVariation)->exists()) {
-                Variation::factory()->create([
-                    'type' => $typeVariation,
-                    'value' => $valueVariation,
-                    'code' => $codeVariation,
-                ]);
-            }
-        endfor;
+        //     if (! Variation::where('type', $typeVariation)->where('value', $valueVariation)->exists()) {
+        //         Variation::factory()->create([
+        //             'type' => $typeVariation,
+        //             'value' => $valueVariation,
+        //             'code' => $codeVariation,
+        //         ]);
+        //     }
+        // endfor;
 
-        Product::all()->each(function(Product $product) {
-            $skusCount = random_int(0, 4);
+        // Product::all()->each(function(Product $product) {
+        //     $skusCount = random_int(0, 4);
 
-            for ($i = 0; $i <= $skusCount; $i++):
-                $variation_id_1 = Variation::query()
-                    ->inRandomOrder()
-                    ->where('type', 'color')
-                    ->first();
+        //     for ($i = 0; $i <= $skusCount; $i++):
+        //         $variation_id_1 = Variation::query()
+        //             ->inRandomOrder()
+        //             ->where('type', 'color')
+        //             ->first();
 
-                $variation_id_2 = Variation::query()
-                    ->inRandomOrder()
-                    ->where('type', 'size')
-                    ->first();
+        //         $variation_id_2 = Variation::query()
+        //             ->inRandomOrder()
+        //             ->where('type', 'size')
+        //             ->first();
 
-                Sku::factory()->create([
-                    'product_id' => $product->id,
-                    'variation_id_1' => $variation_id_1,
-                    'variation_id_2' => $variation_id_2,
-                ]);
-            endfor;
-        });
+        //         Sku::factory()->create([
+        //             'product_id' => $product->id,
+        //             'variation_id_1' => $variation_id_1,
+        //             'variation_id_2' => $variation_id_2,
+        //         ]);
+        //     endfor;
+        // });
     }
 }
