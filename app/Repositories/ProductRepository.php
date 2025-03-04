@@ -8,35 +8,41 @@ use Illuminate\Support\Facades\Log;
 
 class ProductRepository
 {
-    public function filters($query, array $filters, array $alloweds = [])
+    private array $alloweds = ['name'];
+
+    public function filters($query, array $filters)
     {
         foreach ($filters as $key => $value):
-            if (!in_array($key, $alloweds)) continue;
+            if (!in_array($key, $this->alloweds)) continue;
 
             if (is_array($value)) {
                 $query->whereIn($key, $value);
-            } else {
-                match ($key) {
-                    'name' => $query->where('name', 'like', "%$value%"),
-                    default => $query->where($key, $value),
-                };
+
+                continue;
             }
+
+            match ($key) {
+                'name' => $query->where('name', 'like', "%$value%"),
+                default => $query->where($key, $value),
+            };
         endforeach;
 
         return $query;
     }
 
-    public function getAll(array $filters = [], int $perPage = 10, $columns = ['*'])
+    public function getAll(array $filters = [], int $perPage = 10, $columns = [])
     {
         try {
-            $alloweds = ['name'];
-
             $query = Product::query();
-            $query = $this->filters($query, $filters, $alloweds);
+            $query = $this->filters($query, $filters);
+
+            if (! $columns) {
+                $columns = ['*'];
+            }
 
             $data = $query->paginate($perPage, $columns);
 
-            if (! $data->count()) throw new \Exception('Not found', 404);
+            if (! $data->count()) throw new \Exception('Produtos não encontrados', 404);
 
             return $data;
         } catch (\Exception $exception) {

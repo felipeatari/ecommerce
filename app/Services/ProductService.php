@@ -14,45 +14,128 @@ class ProductService
     {
     }
 
-    public function getAll(array $filters = [], int $perPage = 10, array $columns = ['*'])
+    public function getAll(array $filters = [], int $perPage = 10, array $columns = [])
     {
-        $data = $this->productRepository->getAll($filters, $perPage, $columns);
+        try {
+            $data = $this->productRepository->getAll($filters, $perPage, $columns);
 
-        $items = $data->getCollection()->map(function(Product $product) {
-            return ProductDTO::fromModel($product);
-        });
+            $items = $data->getCollection()->map(fn (Product $product) => ProductDTO::fromModel($product));
 
-        return [
-            'current_page' => $data->currentPage(),
-            'last_page' => $data->lastPage(),
-            'total' => $data->total(),
-            'per_page' => $data->perPage(),
-            'links' => $data->appends(request()->query())->links(),
-            'data' => $items
-        ];
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'total' => $data->total(),
+                'per_page' => $data->perPage(),
+                'links' => $data->appends(request()->query())->links(),
+                'data' => $items
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function getOne(?int $id = null)
     {
-        $product = $this->productRepository->getOne($id);
+        try {
+            $data = $this->productRepository->getOne($id);
+            $item = ProductDTO::fromModel($data);
 
-        return ProductDTO::fromModel($product)->toArray();
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'data' => $item
+            ];
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Produto não encontrado',
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function create(array $data)
     {
-        $product = $this->productRepository->create($data);
-        return ProductDTO::fromModel($product);
+        try {
+            $data = $this->productRepository->create($data);
+            $item = ProductDTO::fromModel($data);
+
+            return [
+                'status' => 'success',
+                'code' => 201,
+                'message' => 'Produto criado com Sucesso',
+                'data' => $item
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function update($id, array $data)
     {
-        $product = $this->productRepository->update($id, $data);
-        return ProductDTO::fromModel($product);
+        try {
+            $data = $this->productRepository->update($id, $data);
+            $item = ProductDTO::fromModel($data);
+
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Produto criado com Sucesso',
+                'data' => $item
+            ];
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Produto não encontrado',
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function delete($id)
     {
-        $this->productRepository->delete($id);
+        try {
+            $this->productRepository->delete($id);
+
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Produto apagado com sucesso.',
+            ];
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Produto não encontrado',
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 }

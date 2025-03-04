@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Brand;
-use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,25 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('brands', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Category::class)
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate()
-                ->constrained();
-            $table->foreignIdFor(Brand::class)
-                ->nullable()
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate()
-                ->constrained();
             $table->string('name');
-            $table->string('slug')->nullable();
-            $table->foreignIdFor(Category::class, 'brand')
-            ->nullable()
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate()
-            ->constrained();
-            $table->text('description')->nullable();
             $table->boolean('active')->default(true);
             $table->foreignIdFor(User::class, 'created_by')
                 ->nullable()
@@ -53,7 +35,7 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        DB::statement('ALTER TABLE products AUTO_INCREMENT = 1000;');
+        DB::statement('ALTER TABLE brands AUTO_INCREMENT = 1000;');
     }
 
     /**
@@ -61,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('brands');
     }
 };

@@ -10,16 +10,14 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     private array $rules = [
-        'name' => 'required|string|unique:categories|max:255',
-        'brand' => 'required|boolean|max:5',
+        'name' => 'required|string|max:255',
+        'category_id' => 'required|integer|min:1000',
+        // 'brand' => 'required|boolean|max:5',
     ];
 
     private array $messages = [
         'name.required' => 'Campo Nome obrigatório.',
         'name.string' => 'O Nome é inválido.',
-        'name.unique' => 'Já existe uma Produto comesse nome.',
-        'brand.required' => 'Campo Marca obrigatório.',
-        'brand.boolean' => 'O Marca é inválido.',
     ];
 
     public function __construct(
@@ -28,140 +26,82 @@ class ProductController extends Controller
     {
     }
 
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        try {
-            $filters = $request->all();
-            $perPage = $request->get('per_page', 10);
+        $filters = $request->all();
+        $perPage = $request->get('per_page', 10);
+        $columns = $request->get('columns') ? explode(',', $request->get('columns')) : [];
 
-            $data = [
-                'status' => 'success',
-                'code' => 200,
-            ];
+        $data = $this->productService->getAll($filters, $perPage, $columns);
 
-            $data = array_merge($data, $this->productService->getAll($filters, $perPage));
-
-            return response()->json($data);
-        } catch (\Exception $exception) {
-            $code = $exception->getCode();
-
-            if ($code != 404) $code = 500;
-
-            return response()->json([
-                'status' => 'error',
-                'code' => $exception->getCode(),
-                'message' => $exception->getMessage(),
-            ], $code);
+        if ($data['status'] === 'error') {
+            $data['code'] = httpStatusCodeError($data['code']);
         }
+
+        return response()->json($data, $data['code']);
     }
 
-    public function show(int $id = null)
+    public function show(int $id = null): JsonResponse
     {
-        try {
-            return response()->json($this->productService->getOne($id));
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'Produto não encontrado',
-            ], 404);
-        } catch (\Exception $exception) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 500,
-                'message' => $exception->getMessage(),
-            ], 500);
+        $data = $this->productService->getOne($id);
+
+        if ($data['status'] === 'error') {
+            $data['code'] = httpStatusCodeError($data['code']);
         }
+
+        return response()->json($data, $data['code']);
     }
 
     public function store(Request $request): JsonResponse
     {
         try {
-            $data = $request->validate($this->rules, $this->messages);
+            $inputs = $request->validate($this->rules, $this->messages);
 
-            $this->productService->create($data);
+            $data = $this->productService->create($inputs);
 
-            return response()->json([
-                'status' => 'success',
-                'code' => 201,
-                'message' => 'Produto criado com Sucesso',
-            ], 201);
+            if ($data['status'] === 'error') {
+                $data['code'] = httpStatusCodeError($data['code']);
+            }
+
+            return response()->json($data, $data['code']);
         } catch (\Illuminate\Validation\ValidationException $exception) {
             return response()->json([
                 'status' => 'error',
                 'code' => 400,
                 'message' => $exception->errors(),
             ], 400);
-        } catch (\Exception $exception) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 500,
-                'message' => $exception->getMessage(),
-            ], 500);
         }
     }
 
     public function update(Request $request, $id): JsonResponse
     {
         try {
-            $data = $request->validate($this->rules, $this->messages);
+            $inputs = $request->validate($this->rules, $this->messages);
 
-            $this->productService->update($id, $data);
+            $data = $this->productService->update($id, $inputs);
 
-            return response()->json([
-                'status' => 'success',
-                'code' => 201,
-                'message' => 'Produto atualizado com Sucesso',
-            ], 201);
+            if ($data['status'] === 'error') {
+                $data['code'] = httpStatusCodeError($data['code']);
+            }
+
+            return response()->json($data, $data['code']);
         } catch (\Illuminate\Validation\ValidationException $exception) {
             return response()->json([
                 'status' => 'error',
                 'code' => 400,
                 'errors' => $exception->errors(),
             ], 400);
-        }  catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'Produto não encontrado',
-            ], 404);
-        } catch (\Exception $exception) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 500,
-                'message' => $exception->getMessage(),
-            ], 500);
         }
     }
 
     public function destroy($id): JsonResponse
     {
-        try {
-            $this->productService->delete($id);
+        $data = $this->productService->delete($id);
 
-            return response()->json([
-                'status' => 'success',
-                'code' => 201,
-                'message' => 'Produto apagado com sucesso.',
-            ], 201);
-        } catch (\Illuminate\Validation\ValidationException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 400,
-                'errors' => $exception->errors(),
-            ], 400);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'Produto não encontrado',
-            ], 404);
-        } catch (\Exception $exception) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 500,
-                'message' => $exception->getMessage(),
-            ], 500);
+        if ($data['status'] === 'error') {
+            $data['code'] = httpStatusCodeError($data['code']);
         }
+
+        return response()->json($data, $data['code']);
     }
 }
