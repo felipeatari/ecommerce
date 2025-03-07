@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SkuController;
+use App\Http\Controllers\Api\VariationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,5 +30,25 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/', [ProductController::class, 'store'])->name('store');
         Route::put('/{id}', [ProductController::class, 'update'])->name('update');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::group(['prefix' => 'vatiations', 'as' => 'api.vatiations.'], function () {
+        Route::get('/', [VariationController::class, 'index'])->name('index');
+    });
+    Route::group(['prefix' => 'vatiation', 'as' => 'api.vatiation.'], function () {
+        Route::get('/{id}', [VariationController::class, 'show'])->name('show');
+        Route::post('/', [VariationController::class, 'store'])->name('store');
+        Route::put('/{id}', [VariationController::class, 'update'])->name('update');
+        Route::delete('/{id}', [VariationController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::group(['prefix' => 'skus', 'as' => 'api.skus.'], function () {
+        Route::get('/', [SkuController::class, 'index'])->name('index');
+    });
+    Route::group(['prefix' => 'sku', 'as' => 'api.sku.'], function () {
+        Route::get('/{id}', [SkuController::class, 'show'])->name('show');
+        Route::post('/', [SkuController::class, 'store'])->name('store');
+        Route::put('/{id}', [SkuController::class, 'update'])->name('update');
+        Route::delete('/{id}', [SkuController::class, 'destroy'])->name('destroy');
     });
 });

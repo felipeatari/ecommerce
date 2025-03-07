@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\CategoryService;
+use App\Services\SkuService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class SkuController extends Controller
 {
     private array $rules = [
         'name' => 'required|string|unique:categories|max:255',
@@ -17,13 +17,13 @@ class CategoryController extends Controller
     private array $messages = [
         'name.required' => 'Campo Nome obrigatório.',
         'name.string' => 'O Nome é inválido.',
-        'name.unique' => 'Já existe uma categoria comesse nome.',
+        'name.unique' => 'Já existe uma Sku comesse nome.',
         'brand.required' => 'Campo Marca obrigatório.',
         'brand.boolean' => 'O Marca é inválido.',
     ];
 
     public function __construct(
-        private CategoryService $categoryService
+        private SkuService $skuService
     )
     {
     }
@@ -34,7 +34,7 @@ class CategoryController extends Controller
         $perPage = $request->get('per_page', 10);
         $columns = $request->get('columns') ? explode(',', $request->get('columns')) : [];
 
-        $data = $this->categoryService->getAll($filters, $perPage, $columns);
+        $data = $this->skuService->getAll($filters, $perPage, $columns);
 
         if ($data['status'] === 'error') {
             $data['code'] = httpStatusCodeError($data['code']);
@@ -45,7 +45,7 @@ class CategoryController extends Controller
 
     public function show(int $id = null): JsonResponse
     {
-        $data = $this->categoryService->getOne($id);
+        $data = $this->skuService->getOne($id);
 
         if ($data['status'] === 'error') {
             $data['code'] = httpStatusCodeError($data['code']);
@@ -59,7 +59,7 @@ class CategoryController extends Controller
         try {
             $inputs = $request->validate($this->rules, $this->messages);
 
-            $data = $this->categoryService->create($inputs);
+            $data = $this->skuService->create($inputs);
 
             if ($data['status'] === 'error') {
                 $data['code'] = httpStatusCodeError($data['code']);
@@ -80,7 +80,7 @@ class CategoryController extends Controller
         try {
             $inputs = $request->validate($this->rules, $this->messages);
 
-            $data = $this->categoryService->update($id, $inputs);
+            $data = $this->skuService->update($id, $inputs);
 
             if ($data['status'] === 'error') {
                 $data['code'] = httpStatusCodeError($data['code']);
@@ -98,7 +98,7 @@ class CategoryController extends Controller
 
     public function destroy($id): JsonResponse
     {
-        $data = $this->categoryService->delete($id);
+        $data = $this->skuService->delete($id);
 
         if ($data['status'] === 'error') {
             $data['code'] = httpStatusCodeError($data['code']);

@@ -14,47 +14,128 @@ class CategoryService
     {
     }
 
-    public function getAll(array $filters = [], int $perPage = 10, array $columns = ['*'])
+    public function getAll(array $filters = [], int $perPage = 10, array $columns = [])
     {
-        $data = $this->categoryRepository->getAll($filters, $perPage, $columns);
+        try {
+            $data = $this->categoryRepository->getAll($filters, $perPage, $columns);
 
-        $items = $data->getCollection()->map(function(Category $category) {
-            return CategoryDTO::fromModel($category);
-        });
+            $items = $data->getCollection()->map(fn (Category $category) => CategoryDTO::fromModel($category));
 
-        return [
-            'current_page' => $data->currentPage(),
-            'last_page' => $data->lastPage(),
-            'total' => $data->total(),
-            'per_page' => $data->perPage(),
-            'links' => $data->appends(request()->query())->links(),
-            'data' => $items
-        ];
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'total' => $data->total(),
+                'per_page' => $data->perPage(),
+                'links' => $data->appends(request()->query())->links(),
+                'data' => $items
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function getOne(?int $id = null)
     {
-        $category = $this->categoryRepository->getOne($id);
+        try {
+            $data = $this->categoryRepository->getOne($id);
+            $item = CategoryDTO::fromModel($data);
 
-        return CategoryDTO::fromModel($category)->toArray();
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'data' => $item
+            ];
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Produto não encontrado',
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function create(array $data)
     {
-        $category = $this->categoryRepository->create($data);
+        try {
+            $data = $this->categoryRepository->create($data);
+            $item = CategoryDTO::fromModel($data);
 
-        return CategoryDTO::fromModel($category);
+            return [
+                'status' => 'success',
+                'code' => 201,
+                'message' => 'Produto criado com sucesso',
+                'data' => $item
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function update($id, array $data)
     {
-        $category = $this->categoryRepository->update($id, $data);
+        try {
+            $data = $this->categoryRepository->update($id, $data);
+            $item = CategoryDTO::fromModel($data);
 
-        return CategoryDTO::fromModel($category);
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Produto criado com sucesso',
+                'data' => $item
+            ];
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Produto não encontrado',
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function delete($id)
     {
-        $this->categoryRepository->delete($id);
+        try {
+            $this->categoryRepository->delete($id);
+
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Produto apagado com sucesso.',
+            ];
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Produto não encontrado',
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 }

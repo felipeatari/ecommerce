@@ -14,47 +14,128 @@ class VariationService
     {
     }
 
-    public function getAll(array $filters = [], int $perPage = 10, array $columns = ['*'])
+    public function getAll(array $filters = [], int $perPage = 10, array $columns = [])
     {
-        $data = $this->variationRepository->getAll($filters, $perPage, $columns);
+        try {
+            $data = $this->variationRepository->getAll($filters, $perPage, $columns);
 
-        $items = $data->getCollection()->map(function(Variation $variation) {
-            return VariationDTO::fromModel($variation);
-        });
+            $items = $data->getCollection()->map(fn (Product $product) => ProductDTO::fromModel($product));
 
-        return [
-            'current_page' => $data->currentPage(),
-            'last_page' => $data->lastPage(),
-            'total' => $data->total(),
-            'per_page' => $data->perPage(),
-            'links' => $data->appends(request()->query())->links(),
-            'data' => $items
-        ];
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'total' => $data->total(),
+                'per_page' => $data->perPage(),
+                'links' => $data->appends(request()->query())->links(),
+                'data' => $items
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function getOne(?int $id = null)
     {
-        $variation = $this->variationRepository->getOne($id);
+        try {
+            $data = $this->variationRepository->getOne($id);
+            $item = ProductDTO::fromModel($data);
 
-        return VariationDTO::fromModel($variation)->toArray();
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'data' => $item
+            ];
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Variação não encontrada',
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function create(array $data)
     {
-        $variation = $this->variationRepository->create($data);
+        try {
+            $data = $this->variationRepository->create($data);
+            $item = ProductDTO::fromModel($data);
 
-        return VariationDTO::fromModel($variation);
+            return [
+                'status' => 'success',
+                'code' => 201,
+                'message' => 'Variação criada com sucesso',
+                'data' => $item
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function update($id, array $data)
     {
-        $variation = $this->variationRepository->update($id, $data);
+        try {
+            $data = $this->variationRepository->update($id, $data);
+            $item = ProductDTO::fromModel($data);
 
-        return VariationDTO::fromModel($variation);
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Variação criada com sucesso',
+                'data' => $item
+            ];
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Variação não encontrada',
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function delete($id)
     {
-        $this->variationRepository->delete($id);
+        try {
+            $this->variationRepository->delete($id);
+
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Variação apagada com sucesso.',
+            ];
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Variação não encontrada',
+            ];
+        } catch (\Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 }

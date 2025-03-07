@@ -30,19 +30,17 @@ class ProductRepository
         return $query;
     }
 
-    public function getAll(array $filters = [], int $perPage = 10, $columns = [])
+    public function getAll(array $filters = [], int $perPage = 10, $columns = ['*'])
     {
         try {
-            $query = Product::query();
-            $query = $this->filters($query, $filters);
+            $alloweds = ['name'];
 
-            if (! $columns) {
-                $columns = ['*'];
-            }
+            $query = Category::query();
+            $query = $this->filters($query, $filters, $alloweds);
 
             $data = $query->paginate($perPage, $columns);
 
-            if (! $data->count()) throw new \Exception('Produtos não encontrados', 404);
+            if (! $data->count()) throw new \Exception('Not found', 404);
 
             return $data;
         } catch (\Exception $exception) {
@@ -55,7 +53,7 @@ class ProductRepository
     public function getOne(?int $id = null)
     {
         try {
-            return Product::findOrFail($id);
+            return Category::findOrFail($id);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
 
             throw $exception;
@@ -71,11 +69,11 @@ class ProductRepository
         DB::beginTransaction();
 
         try {
-            $product = Product::create($data);
+            $category = Category::create($data);
 
             DB::commit();
 
-            return $product;
+            return $category;
         } catch (\Exception $exception) {
             DB::rollBack();
 
@@ -90,12 +88,12 @@ class ProductRepository
         DB::beginTransaction();
 
         try {
-            $product = $this->getOne($id);
-            $product->update($data);
+            $category = $this->getOne($id);
+            $category->update($data);
 
             DB::commit();
 
-            return $product;
+            return $category;
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             DB::rollBack();
 
@@ -114,15 +112,14 @@ class ProductRepository
     public function delete(?int $id = null)
     {
         DB::beginTransaction();
-
         try {
-            $product = $this->getOne($id);
+            $category = $this->getOne($id);
 
-            $product->delete();
+            $category->delete();
 
             DB::commit();
 
-            return $product;
+            return $category;
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             DB::rollBack();
 
