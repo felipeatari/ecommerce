@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sku extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'product_id',
@@ -17,12 +18,19 @@ class Sku extends Model
         'price',
         'cost_price',
         'discount_price',
-        'active',
         'weight',
         'width',
         'height',
         'length',
         'cover',
+        'active',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
+
+    protected $dates = [
+        'deleted_at',
     ];
 
     public function product()

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Product;
+use App\Models\User;
 use App\Models\Variation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -31,13 +32,29 @@ return new class extends Migration
             $table->integer('price')->nullable();
             $table->integer('cost_price')->nullable();
             $table->integer('discount_price')->nullable();
-            $table->boolean('active')->default(true);
             $table->float('weight', 3)->nullable();
             $table->float('width', 2)->nullable();
             $table->float('height', 2)->nullable();
             $table->float('length', 2)->nullable();
             $table->string('cover')->nullable();
+            $table->boolean('active')->default(true);
+            $table->foreignIdFor(User::class, 'created_by')
+                ->nullable()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate()
+                ->constrained();
+            $table->foreignIdFor(User::class, 'updated_by')
+                ->nullable()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate()
+                ->constrained();
+            $table->foreignIdFor(User::class, 'removed_by')
+                ->nullable()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate()
+                ->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         DB::statement('ALTER TABLE skus AUTO_INCREMENT = 1000;');

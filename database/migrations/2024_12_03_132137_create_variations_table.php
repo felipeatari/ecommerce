@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,24 @@ return new class extends Migration
             $table->string('value')->unique();
             $table->string('code')->unique()->nullable();
             $table->text('extra')->nullable();
+            $table->boolean('active')->default(true);
+            $table->foreignIdFor(User::class, 'created_by')
+                ->nullable()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate()
+                ->constrained();
+            $table->foreignIdFor(User::class, 'updated_by')
+                ->nullable()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate()
+                ->constrained();
+            $table->foreignIdFor(User::class, 'removed_by')
+                ->nullable()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate()
+                ->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         DB::statement('ALTER TABLE variations AUTO_INCREMENT = 1000;');

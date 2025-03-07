@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Models\Category;
+use App\Models\Sku;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class CategoryRepository
+class SkuRepository
 {
     public function filters($query, array $filters, array $alloweds = [])
     {
@@ -31,7 +31,7 @@ class CategoryRepository
         try {
             $alloweds = ['name'];
 
-            $query = Category::query();
+            $query = Sku::query();
             $query = $this->filters($query, $filters, $alloweds);
 
             $data = $query->paginate($perPage, $columns);
@@ -49,7 +49,7 @@ class CategoryRepository
     public function getOne(?int $id = null)
     {
         try {
-            return Category::findOrFail($id);
+            return Sku::findOrFail($id);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
 
             throw $exception;
@@ -65,11 +65,11 @@ class CategoryRepository
         DB::beginTransaction();
 
         try {
-            $category = Category::create($data);
+            $sku = Sku::create($data);
 
             DB::commit();
 
-            return $category;
+            return $sku;
         } catch (\Exception $exception) {
             DB::rollBack();
 
@@ -84,12 +84,12 @@ class CategoryRepository
         DB::beginTransaction();
 
         try {
-            $category = $this->getOne($id);
-            $category->update($data);
+            $sku = $this->getOne($id);
+            $sku->update($data);
 
             DB::commit();
 
-            return $category;
+            return $sku;
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             DB::rollBack();
 
@@ -109,13 +109,13 @@ class CategoryRepository
     {
         DB::beginTransaction();
         try {
-            $category = $this->getOne($id);
+            $sku = $this->getOne($id);
 
-            $category->delete();
+            $sku->delete();
 
             DB::commit();
 
-            return $category;
+            return $sku;
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             DB::rollBack();
 

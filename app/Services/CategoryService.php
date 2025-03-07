@@ -42,12 +42,14 @@ class CategoryService
     public function create(array $data)
     {
         $category = $this->categoryRepository->create($data);
+
         return CategoryDTO::fromModel($category);
     }
 
     public function update($id, array $data)
     {
         $category = $this->categoryRepository->update($id, $data);
+
         return CategoryDTO::fromModel($category);
     }
 
