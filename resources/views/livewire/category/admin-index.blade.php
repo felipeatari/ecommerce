@@ -3,33 +3,37 @@
         <div class="w-full flex items-center justify-between mb-6">
             <h1 class="font-semibold">Categorias</h1>
             <a
-            wire:navigate
-            href="/admin/categoria/cadastrar"
-            class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
+                href="{{ route('admin.category.create', ['page' => request('page') ?? 1]) }}"
+                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
             >
                 Cadastar
             </a>
         </div>
 
-        <div class="w-full h-[280px]">
+        <div class="w-full min-h-[280px]">
             <table class="w-full table-auto text-center">
                 <thead class="border-b-2">
                     <tr>
                         <th class="border py-2 w-[100px]">ID</th>
                         <th class="border py-2">Nome</th>
-                        <th class="border py-2 w-[100px]">Ver</th>
+                        <th class="border py-2 w-[100px]">Ações</th>
+                    </tr>
+                    <tr>
+                        <td class="border p-1 w-[100px]">
+                            <input type="number" min="0" wire:model="searchID" class="w-full px-2 py-1 border rounded-md">
+                        </td>
+                        <td class="border p-1">
+                            <input type="text" wire:model="searchName" class="w-full px-2 py-1 border rounded-md">
+                        </td>
+                        <td class="border p-1 w-[100px]">
+                            <button wire:click="search">
+                                <x-icons.search />
+                            </button>
+                        </td>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (! $categories->count())
-                    <tr class="hover:bg-gray-100">
-                        <td class="border p-3"> - </td>
-                        <td class="border p-3"> - </td>
-                        <td class="border p-3"> - </td>
-                    </tr>
-                    @endif
-
-                    @foreach ($categories as $category)
+                    @forelse ($categories as $category)
                     <tr class="hover:bg-gray-100">
                         <td class="border p-3">
                             {{ $category->id }}
@@ -39,48 +43,33 @@
                         </td>
                         <td class="border p-3">
                             <a
-                            class=" flex items-center justify-center"
-                            wire:navigate
-                            href="/admin/categoria/ver/{{ $category->id }}"
+                                class=" flex items-center justify-center"
+                                href="{{ route('admin.category.show', ['category' => $category->id]) }}"
                             >
                                 <x-icons.show />
                             </a>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr class="hover:bg-gray-100">
+                        <td class="border p-3"> - </td>
+                        <td class="border p-3"> - </td>
+                        <td class="border p-3"> - </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
-        <div class="w-full flex justify-center mt-8">
-            <div class="w-[300px] h-5 flex items-center justify-between">
-                @if ($categories->hasPages())
-                    @if ($categories->onFirstPage())
-                        <span class="border px-3 py-1 font-semibold text-gray-400">Previous</span>
-                    @else
-                        <button
-                        class="border px-3 py-1 font-semibold"
-                        wire:click="previousPage"
-                        wire:loading.attr="disabled"
-                        rel="prev"
-                        >
-                            Previous
-                        </button>
-                    @endif
-
-                    <span>Página: {{ $categories->currentPage() }}</span>
-
-                    @if ($categories->onLastPage())
-                        <span class="border px-3 py-1 font-semibold text-gray-400">Next</span>
-                    @else
-                        <button
-                        class="border px-3 py-1 font-semibold"
-                        wire:click="nextPage"
-                        wire:loading.attr="disabled"
-                        rel="next">Next</button>
-                    @endif
-                @endif
-            </div>
+        <div class="w-full h-5 mt-8 flex items-center justify-between">
+            @if ($categories->hasPages())
+                <select class="border px-2 py-1">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                </select>
+                <span>Página {{ $categories->currentPage() }}</span>
+                <div>{{ $categories->links() }}</div>
+            @endif
         </div>
     </div>
 </div>

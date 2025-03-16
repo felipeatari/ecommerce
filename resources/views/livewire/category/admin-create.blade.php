@@ -1,18 +1,17 @@
 <div class="w-full flex justify-center px-3">
     <form wire:submit.prevent="store" class="bg-white w-full px-10 py-5 shadow">
         <div class="w-full flex justify-between my-5">
-            <a
-            wire:navigate
-            class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
-            href="/admin/categoria/listar"
+            <button
+                class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
+                onclick="window.history.back()"
             >
                 <x-icons.back />
-            </a>
+            </button>
 
             <button
-            wire:click="store"
-            type="button"
-            class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
+                wire:click="store"
+                type="button"
+                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
             >
                 Salvar
             </button>
@@ -40,18 +39,13 @@
                     <option value="0">selecionar</option>
                     @foreach ($categories as $category)
                     <option
-                    value="{{ $category->id }}"
-                    wire:key="{{ $category->id }}"
+                        value="{{ $category->id }}"
+                        wire:key="{{ $category->id }}"
                     >
                         {{ $category->name }}
                     </option>
                     @endforeach
                 </select>
-            </div>
-
-            <div class="flex items-center">
-                <span class="px-2 py-1 font-semibold">Marca:</span>
-                <input class="w-5 h-5" type="checkbox" wire:model="brand">
             </div>
         </div>
     </form>

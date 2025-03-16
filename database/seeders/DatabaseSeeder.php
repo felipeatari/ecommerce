@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Variation;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,11 +30,15 @@ class DatabaseSeeder extends Seeder
             'level' => UserLevel::Admin,
         ]);
 
-        $categories = ['Roupa', 'Acessorio', 'Calcado'];
+        $categories = ['Roupa', 'Acessorio', 'Calçado'];
 
         foreach ($categories as $key => $category):
             if (! Category::where('name', $category)->exists()) {
-                Category::factory()->create([ 'name' => $category, 'parent' => null ]);
+                Category::factory()->create([
+                    'name' => $category,
+                    'slug' => Str::slug($category),
+                    'parent' => null
+                ]);
             }
         endforeach;
 

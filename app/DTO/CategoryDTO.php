@@ -12,7 +12,7 @@ class CategoryDTO
     public ?bool $brand;
     public ?bool $active;
 
-    public function __construct(Category $category)
+    public function __construct(Category $category, array $columns = [])
     {
         $this->id = $category['id'];
         $this->name = $category['name'];
@@ -21,19 +21,21 @@ class CategoryDTO
         $this->active = $category['active'];
     }
 
-    public function toArray(): array
+    public function toArray(array $columns = []): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'name' => $this->name,
             'parent' => $this->parent,
             'brand' => $this->brand,
             'active' => $this->active,
         ];
+
+        return $columns ? array_intersect_key($data, array_flip($columns)) : $data;
     }
 
-    public static function fromModel(Category $category)
+    public static function fromModel(Category $category, array $columns = [])
     {
-        return new self($category);
+        return new self($category, $columns);
     }
 }

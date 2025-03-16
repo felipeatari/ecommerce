@@ -3,43 +3,54 @@
 namespace App\Repositories;
 
 use App\Models\Category;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CategoryRepository
 {
-    public function filters($query, array $filters, array $alloweds = [])
+    private array $alloweds = ['id', 'name'];
+
+    private function filters(object $query, array $filters)
     {
         foreach ($filters as $key => $value):
-            if (!in_array($key, $alloweds)) continue;
+            if (!in_array($key, $this->alloweds)) continue;
 
             if (is_array($value)) {
                 $query->whereIn($key, $value);
-            } else {
-                match ($key) {
-                    'name' => $query->where('name', 'like', "%$value%"),
-                    default => $query->where($key, $value),
-                };
+
+                continue;
             }
+
+            match ($key) {
+                'id' => $query->where('id', $value),
+                'name' => $query->where('name', 'like', "%$value%"),
+                default => $query->where($key, $value),
+            };
         endforeach;
 
         return $query;
     }
 
-    public function getAll(array $filters = [], int $perPage = 10, $columns = ['*'])
+    public function getAll(array $filters = [], int $perPage = 10, array $columns = [])
     {
         try {
-            $alloweds = ['name'];
+            $query = Category::query()->orderByDesc('id');
+            $query = $this->filters($query, $filters);
 
-            $query = Product::query();
-            $query = $this->filters($query, $filters, $alloweds);
+            if (! $columns) $columns = ['*'];
 
             $data = $query->paginate($perPage, $columns);
 
-            if (! $data->count()) throw new \Exception('Not found', 404);
+            if (! $data->count()) throw new ModelNotFoundException('Not Found', 404);
 
             return $data;
-        } catch (\Exception $exception) {
+        } catch (ModelNotFoundException $exception) {
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        } catch (Exception $exception) {
             Log::error($exception->getMessage());
 
             throw $exception;
@@ -49,11 +60,12 @@ class CategoryRepository
     public function getOne(?int $id = null)
     {
         try {
-            return Product::findOrFail($id);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return Category::findOrFail($id);
+        } catch (ModelNotFoundException $exception) {
+            Log::error($exception->getMessage());
 
             throw $exception;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error($exception->getMessage());
 
             throw $exception;
@@ -65,12 +77,12 @@ class CategoryRepository
         DB::beginTransaction();
 
         try {
-            $product = Product::create($data);
+            $product = Category::create($data);
 
             DB::commit();
 
             return $product;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
@@ -90,13 +102,13 @@ class CategoryRepository
             DB::commit();
 
             return $product;
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
 
             throw $exception;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
@@ -117,13 +129,13 @@ class CategoryRepository
             DB::commit();
 
             return $product;
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
 
             throw $exception;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());

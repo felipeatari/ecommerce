@@ -5,6 +5,8 @@ namespace App\Services;
 use App\DTO\CategoryDTO;
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryService
 {
@@ -19,11 +21,11 @@ class CategoryService
         try {
             $data = $this->categoryRepository->getAll($filters, $perPage, $columns);
 
-            $items = $data->getCollection()->map(fn (Category $category) => CategoryDTO::fromModel($category));
+            $items = $data->getCollection()->map(function (Category $category) use($columns) {
+                return CategoryDTO::fromModel($category, $columns);
+            });
 
             return [
-                'status' => 'success',
-                'code' => 200,
                 'current_page' => $data->currentPage(),
                 'last_page' => $data->lastPage(),
                 'total' => $data->total(),
@@ -31,7 +33,7 @@ class CategoryService
                 'links' => $data->appends(request()->query())->links(),
                 'data' => $items
             ];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return [
                 'status' => 'error',
                 'code' => $exception->getCode(),
@@ -51,13 +53,13 @@ class CategoryService
                 'code' => 200,
                 'data' => $item
             ];
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             return [
                 'status' => 'error',
                 'code' => 404,
                 'message' => 'Produto não encontrado',
             ];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return [
                 'status' => 'error',
                 'code' => $exception->getCode(),
@@ -66,7 +68,7 @@ class CategoryService
         }
     }
 
-    public function create(array $data)
+    public function create(array $data): array
     {
         try {
             $data = $this->categoryRepository->create($data);
@@ -78,7 +80,7 @@ class CategoryService
                 'message' => 'Produto criado com sucesso',
                 'data' => $item
             ];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return [
                 'status' => 'error',
                 'code' => $exception->getCode(),
@@ -87,7 +89,7 @@ class CategoryService
         }
     }
 
-    public function update($id, array $data)
+    public function update(?int $id, array $data)
     {
         try {
             $data = $this->categoryRepository->update($id, $data);
@@ -96,16 +98,16 @@ class CategoryService
             return [
                 'status' => 'success',
                 'code' => 200,
-                'message' => 'Produto criado com sucesso',
+                'message' => 'Categoria criado com sucesso',
                 'data' => $item
             ];
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Produto não encontrado',
+                'message' => 'Categoria não encontrado',
             ];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return [
                 'status' => 'error',
                 'code' => $exception->getCode(),
@@ -124,13 +126,13 @@ class CategoryService
                 'code' => 200,
                 'message' => 'Produto apagado com sucesso.',
             ];
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             return [
                 'status' => 'error',
                 'code' => 404,
                 'message' => 'Produto não encontrado',
             ];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return [
                 'status' => 'error',
                 'code' => $exception->getCode(),

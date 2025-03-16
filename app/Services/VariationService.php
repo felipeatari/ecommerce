@@ -22,8 +22,6 @@ class VariationService
             $items = $data->getCollection()->map(fn (Product $product) => ProductDTO::fromModel($product));
 
             return [
-                'status' => 'success',
-                'code' => 200,
                 'current_page' => $data->currentPage(),
                 'last_page' => $data->lastPage(),
                 'total' => $data->total(),

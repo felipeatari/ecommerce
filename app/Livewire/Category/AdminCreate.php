@@ -3,6 +3,8 @@
 namespace App\Livewire\Category;
 
 use App\Models\Category;
+use App\Repositories\CategoryRepository;
+use App\Services\CategoryService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
@@ -11,21 +13,16 @@ use Livewire\Component;
 class AdminCreate extends Component
 {
     public string $name = '';
-    public int $parent = 0;
-    public bool $brand = false;
+    public ?int $parent = null;
 
     protected function rules()
     {
-        return [
-            'name' => 'required',
-        ];
+        return ['name' => 'required'];
     }
 
     protected function messages()
     {
-        return [
-            'name.required' => 'O campo nome é obrigatório',
-        ];
+        return ['name.required' => 'O campo nome é obrigatório'];
     }
 
     #[Computed()]
@@ -38,23 +35,16 @@ class AdminCreate extends Component
     {
         $this->validate();
 
-        DB::beginTransaction();
+        $data = (new CategoryService(new CategoryRepository))->create([
+            'name' => $this->name,
+            'parent' => $this->parent,
+        ]);
 
-        try {
-            Category::create([
-                'name' => $this->name,
-                'parent' => $this->parent,
-                'brand' => $this->brand,
-            ]);
-
-            DB::commit();
-
-            return $this->js('alert("Categoria criada com sucesso.")');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        return $this->js('alert("Categoria criada com sucesso.")');
     }
 
     public function render()

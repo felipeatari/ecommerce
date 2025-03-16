@@ -19,7 +19,6 @@ class CategoryFactory extends Factory
         return [
             'name' => fake()->word(),
             'parent' => 0,
-            'brand' => false,
         ];
     }
 }

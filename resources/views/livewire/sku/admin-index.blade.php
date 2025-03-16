@@ -23,16 +23,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (! $skus->count())
-                    <tr class="hover:bg-gray-100">
-                        <td class="border p-3"> - </td>
-                        <td class="border p-3"> - </td>
-                        <td class="border p-3"> - </td>
-                        <td class="border p-3"> - </td>
-                    </tr>
-                    @endif
-
-                    @foreach ($skus as $sku)
+                    @forelse ($skus as $sku)
                     <tr class="hover:bg-gray-100">
                         <td class="border p-3">{{ $sku->id }}</td>
                         {{-- <td class="border p-3">{{ $sku->product_id }}</td> --}}
@@ -48,7 +39,14 @@
                             </a>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr class="hover:bg-gray-100">
+                        <td class="border p-3"> - </td>
+                        <td class="border p-3"> - </td>
+                        <td class="border p-3"> - </td>
+                        <td class="border p-3"> - </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

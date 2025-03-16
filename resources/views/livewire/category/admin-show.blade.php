@@ -1,16 +1,16 @@
 <div class="w-full flex justify-center px-3">
     <div class="w-full bg-white px-10 py-5 shadow">
         <div class="w-full flex justify-between my-5">
-            <a
-            wire:navigate
-            class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
-            href="/admin/categoria/listar"
+            <button
+                class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
+                onclick="window.history.back()"
             >
                 <x-icons.back />
-            </a>
+            </button>
 
             <div>
-                <a wire:navigate href="/admin/categoria/editar/{{ $category->id }}" >
+                <a
+                    href="{{ route('admin.category.update', ['category' => $category->id]) }}" >
                     <button class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1">
                         Editar
                     </button>
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <h1 class="font-bold my-10">Categoria {{ $category->id }}</h1>
+        <h1 class="font-bold my-10">Vizualizar Categoria {{ $category->id }}</h1>
 
         <div class="w-full flex items-center justify-between my-5">
             <div class="w-full flex">
@@ -55,15 +55,6 @@
                 <div class="w-[200px] px-2 py-1 border">
                     {{ $this->parent($category->parent) }}
                 </div>
-            </div>
-
-            <div class="flex">
-                <span class="px-2 py-1 font-semibold">Marca:</span>
-                @if ($category->brand)
-                <div class="w-[50px] px-2 py-1 border">Sim</div>
-                @else
-                <div class="w-[50px] px-2 py-1 border">Não</div>
-                @endif
             </div>
         </div>
     </div>

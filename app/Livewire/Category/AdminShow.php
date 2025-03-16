@@ -14,7 +14,7 @@ class AdminShow extends Component
 
     public bool $statusModalDelete = false;
 
-    public function parent(int $parent)
+    public function parent(?int $parent)
     {
         if (! $parent) {
 

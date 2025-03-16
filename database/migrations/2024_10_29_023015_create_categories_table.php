@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('brand')->default(false);
             $table->string('slug')->nullable();
             $table->boolean('active')->default(true);
             $table->foreignIdFor(Category::class, 'parent')

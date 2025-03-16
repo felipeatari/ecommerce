@@ -3,6 +3,8 @@
 namespace App\Livewire\Category;
 
 use App\Models\Category;
+use App\Repositories\CategoryRepository;
+use App\Services\CategoryService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
@@ -11,10 +13,18 @@ use Livewire\Component;
 class AdminUpdate extends Component
 {
     public Category $category;
-
     public string $name = '';
-    public int $parent = 0;
-    public bool $brand;
+    public ?int $parent = null;
+
+    protected function rules()
+    {
+        return ['name' => 'required'];
+    }
+
+    protected function messages()
+    {
+        return ['name.required' => 'O campo nome é obrigatório'];
+    }
 
     #[Computed()]
     public function categories()
@@ -22,47 +32,26 @@ class AdminUpdate extends Component
         return Category::all();
     }
 
-    protected function rules()
-    {
-        return [
-            'name' => 'required',
-        ];
-    }
-
-    protected function messages()
-    {
-        return [
-            'name.required' => 'O campo nome é obrigatório',
-        ];
-    }
-
     public function update()
     {
         $this->validate();
 
-        DB::beginTransaction();
+        $data = (new CategoryService(new CategoryRepository))->update($this->category->id, [
+            'name' => $this->name,
+            'parent' => $this->parent,
+        ]);
 
-        try {
-            $this->category->name = $this->name;
-            $this->category->parent = $this->parent;
-            $this->category->brand = $this->brand;
-            $this->category->save();
-
-            DB::commit();
-
-            return $this->js('alert("Categoria editada com sucesso.")');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        return redirect()->route('admin.category.show', ['category' => $this->category->id]);
     }
 
     public function render()
     {
         $this->name = $this->category->name;
         $this->parent = $this->category->parent;
-        $this->brand = $this->category->brand;
 
         return view('livewire.category.admin-update', [
             'categories' => $this->categories
