@@ -39,6 +39,7 @@ class AdminUpdate extends Component
         $data = (new CategoryService(new CategoryRepository))->update($this->category->id, [
             'name' => $this->name,
             'parent' => $this->parent,
+            'slug' => slug($this->name)
         ]);
 
         if ($data['status'] === 'error') {

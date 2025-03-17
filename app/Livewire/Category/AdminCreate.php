@@ -38,13 +38,14 @@ class AdminCreate extends Component
         $data = (new CategoryService(new CategoryRepository))->create([
             'name' => $this->name,
             'parent' => $this->parent,
+            'slug' => slug($this->name)
         ]);
 
         if ($data['status'] === 'error') {
             return $this->addError('db', $data['message']);
         }
 
-        return $this->js('alert("Categoria criada com sucesso.")');
+        return redirect()->route('admin.category.index');
     }
 
     public function render()

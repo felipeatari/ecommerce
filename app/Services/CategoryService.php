@@ -21,17 +21,16 @@ class CategoryService
         try {
             $data = $this->categoryRepository->getAll($filters, $perPage, $columns);
 
-            $items = $data->getCollection()->map(function (Category $category) use($columns) {
-                return CategoryDTO::fromModel($category, $columns);
-            });
-
             return [
-                'current_page' => $data->currentPage(),
-                'last_page' => $data->lastPage(),
-                'total' => $data->total(),
-                'per_page' => $data->perPage(),
-                'links' => $data->appends(request()->query())->links(),
-                'data' => $items
+                'status' => 'success',
+                'code' => 201,
+                'data' => $data,
+            ];
+        } catch (ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Categorias não encontradas.',
             ];
         } catch (Exception $exception) {
             return [
@@ -57,13 +56,7 @@ class CategoryService
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Produto não encontrado',
-            ];
-        } catch (Exception $exception) {
-            return [
-                'status' => 'error',
-                'code' => $exception->getCode(),
-                'message' => $exception->getMessage(),
+                'message' => 'Categoria não encontrado',
             ];
         }
     }
@@ -77,7 +70,7 @@ class CategoryService
             return [
                 'status' => 'success',
                 'code' => 201,
-                'message' => 'Produto criado com sucesso',
+                'message' => 'Categoria criado com sucesso',
                 'data' => $item
             ];
         } catch (Exception $exception) {
@@ -124,13 +117,13 @@ class CategoryService
             return [
                 'status' => 'success',
                 'code' => 200,
-                'message' => 'Produto apagado com sucesso.',
+                'message' => 'Categoria apagado com sucesso.',
             ];
         } catch (ModelNotFoundException $exception) {
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Produto não encontrado',
+                'message' => 'Categoria não encontrado',
             ];
         } catch (Exception $exception) {
             return [

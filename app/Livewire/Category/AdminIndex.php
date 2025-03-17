@@ -2,38 +2,67 @@
 
 namespace App\Livewire\Category;
 
-use App\Models\Category;
 use App\Repositories\CategoryRepository;
 use App\Services\CategoryService;
+use Illuminate\Http\Request;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
+
 class AdminIndex extends Component
 {
-    // use WithPagination, WithoutUrlPagination;
+    use WithPagination;
 
-    private Category $category;
-    public ?int $searchID = null;
-    public ?string $searchName = null;
+    public ?int $searchByID = null;
+    public ?string $searchByName = null;
     public array $filters = [];
     public array $columns = ['id', 'name'];
     public bool $filter = false;
+    public $selectPerPage = [
+        5 => 5,
+        10 => 10,
+        50 => 50
+    ];
+    public $selectedPerPage = 5;
+
+    public function updating($property)
+    {
+        if (in_array($property, ['searchByID', 'searchByName'])) {
+            $this->resetPage();
+        }
+    }
 
     #[Computed()]
     public function categories()
     {
-        if ($this->filter and $this->searchID) {
-            $this->filters['id'] = $this->searchID;
+        if ($this->filter and $this->searchByID) {
+            $this->filters['id'] = $this->searchByID;
         }
 
-        if ($this->filter and $this->searchName) {
-            $this->filters['name'] = $this->searchName;
+        if ($this->filter and $this->searchByName) {
+            $this->filters['name'] = $this->searchByName;
         }
 
-        if (!$this->searchID and !$this->searchName) $this->filters = [];
+        if (!$this->searchByID and !$this->searchByName) {
+            $this->filter = false;
+            $this->filters = [];
+        }
 
-        return (new CategoryRepository)->getAll($this->filters, 5, $this->columns);
+        $data = (new CategoryService((new CategoryRepository)))->getAll(
+            $this->filters,
+            $this->selectedPerPage,
+            $this->columns
+        );
+
+        if ($data['status'] === 'error') return [];
+
+        if ($data['data']->count() == 0 and isset($this->page) and $this->page > $data['data']->lastPage()) {
+            $filterRedirect['page'] = 1;
+
+            return redirect()->route('admin.category.index', $filterRedirect);
+        }
+
+        return $data['data'];
     }
 
     public function search()

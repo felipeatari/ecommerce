@@ -16,3 +16,29 @@
     border-radius: 6px;
     border: 2px solid transparent;
 }
+
+    /* Links normais */
+    .pagination .page-link {
+        background-color: #007bff; /* Azul */
+        color: white;
+        border: 1px solid #007bff;
+    }
+
+    /* Hover nos links */
+    .pagination .page-link:hover {
+        background-color: #0056b3; /* Azul mais escuro */
+        border-color: #0056b3;
+    }
+
+    /* Página ativa */
+    .pagination .active .page-link {
+        background-color: #28a745; /* Verde */
+        border-color: #28a745;
+    }
+
+    /* Links desativados (Anterior/Próximo desativados) */
+    .pagination .disabled .page-link {
+        background-color: #e9ecef;
+        color: #6c757d;
+        border-color: #dee2e6;
+    }

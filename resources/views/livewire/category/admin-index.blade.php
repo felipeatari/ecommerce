@@ -3,14 +3,14 @@
         <div class="w-full flex items-center justify-between mb-6">
             <h1 class="font-semibold">Categorias</h1>
             <a
-                href="{{ route('admin.category.create', ['page' => request('page') ?? 1]) }}"
+                href="{{ route('admin.category.create') }}"
                 class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
             >
                 Cadastar
             </a>
         </div>
 
-        <div class="w-full min-h-[280px]">
+        <div class="w-full min-h-[350px]">
             <table class="w-full table-auto text-center">
                 <thead class="border-b-2">
                     <tr>
@@ -18,19 +18,20 @@
                         <th class="border py-2">Nome</th>
                         <th class="border py-2 w-[100px]">Ações</th>
                     </tr>
-                    <tr>
-                        <td class="border p-1 w-[100px]">
-                            <input type="number" min="0" wire:model="searchID" class="w-full px-2 py-1 border rounded-md">
-                        </td>
-                        <td class="border p-1">
-                            <input type="text" wire:model="searchName" class="w-full px-2 py-1 border rounded-md">
-                        </td>
-                        <td class="border p-1 w-[100px]">
-                            <button wire:click="search">
-                                <x-icons.search />
-                            </button>
-                        </td>
-                    </tr>
+
+                        <tr>
+                            <td class="border p-1 w-[100px]">
+                                <input type="number" min="1000" wire:model="searchByID" class="w-full px-2 py-1 border rounded-md">
+                            </td>
+                            <td class="border p-1">
+                                <input type="text" wire:model="searchByName" class="w-full px-2 py-1 border rounded-md">
+                            </td>
+                            <td class="border p-1 w-[100px]">
+                                <button wire:click="search">
+                                    <x-icons.search />
+                                </button>
+                            </td>
+                        </tr>
                 </thead>
                 <tbody>
                     @forelse ($categories as $category)
@@ -52,9 +53,9 @@
                     </tr>
                     @empty
                     <tr class="hover:bg-gray-100">
-                        <td class="border p-3"> - </td>
-                        <td class="border p-3"> - </td>
-                        <td class="border p-3"> - </td>
+                        <td class="border p-3" colspan="3">
+                            Nenhum registro encontrado
+                        </td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -62,13 +63,16 @@
         </div>
 
         <div class="w-full h-5 mt-8 flex items-center justify-between">
-            @if ($categories->hasPages())
-                <select class="border px-2 py-1">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                </select>
-                <span>Página {{ $categories->currentPage() }}</span>
-                <div>{{ $categories->links() }}</div>
+            <select wire:model.change="selectedPerPage" class="w-[100px] border px-2 py-1">
+                @foreach ($selectPerPage as $amount => $perPage)
+                    <option value="{{ $amount }}">{{ $perPage }}</option>
+                @endforeach
+            </select>
+
+            @if ($categories and $categories->hasPages())
+            <span>Página {{ $categories->currentPage() }}</span>
+
+            <div>{{ $categories->links() }}</div>
             @endif
         </div>
     </div>

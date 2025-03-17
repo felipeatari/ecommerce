@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/assets/images/icon.png" type="image/x-icon">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="shortcut icon" href="{{ asset('assets/images/icon.png')}}" type="image/x-icon">
     @vite('resources/css/app.css')
     <title>{{ $title ?? config('app.name') }}</title>
 </head>
@@ -15,17 +16,36 @@
             <div class="w-full"><!-- Menu -->
                 <div class="flex flex-col justify-center items-center mb-5">
                     <a href="/admin">
-                        <img class="w-[150px] my-4" src="/assets/images/logo.png" alt="">
+                        <img class="w-[150px] my-4" src="{{ asset('assets/images/logo.png')}} " alt="">
                     </a>
                 </div>
+
+                @php
+                    $routeName = Route::currentRouteName();
+
+                    $products = [
+                        'admin.category.index' => 'Categorias',
+                        'admin.product.index' => 'Produtos',
+                        'admin.variation.index' => 'Variações',
+                        'admin.sku.index' => 'Skus',
+                    ];
+                @endphp
 
                 <fieldset class="px-2 my-2">
                     <legend class="w-full font-semibold cursor-pointer">Produto</legend>
                     <div class="w-full flex flex-col text-sm">
-                        <a wire:navigate href="/admin/categoria/listar" class="w-full hover:bg-gray-200 px-1 py-1">Categorias</a>
-                        <a wire:navigate href="/admin/produto/listar" class="w-full hover:bg-gray-200 px-1 py-1">Produtos</a>
-                        <a href="/admin/variacao/listar" class="w-full hover:bg-gray-200 px-1 py-1">Variações</a>
-                        <a wire:navigate href="/admin/sku/listar" class="w-full hover:bg-gray-200 px-1 py-1">Skus</a>
+                        @foreach ($products as $route => $name)
+                            <a
+                                href="{{ route($route) }}"
+                                @class([
+                                    'w-full px-1 py-1',
+                                    'hover:bg-gray-100',
+                                    'bg-gray-300' => $routeName === $route
+                                ])
+                            >
+                                {{ $name }}
+                            </a>
+                        @endforeach
                     </div>
                 </fieldset>
 

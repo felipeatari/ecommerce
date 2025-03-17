@@ -3,12 +3,14 @@
 namespace App\Repositories;
 
 use App\Models\Product;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ProductRepository
 {
-    private array $alloweds = ['name'];
+    private array $alloweds = ['id', 'name'];
 
     public function filters($query, array $filters)
     {
@@ -22,6 +24,7 @@ class ProductRepository
             }
 
             match ($key) {
+                'id' => $query->where('id', $value),
                 'name' => $query->where('name', 'like', "%$value%"),
                 default => $query->where($key, $value),
             };
@@ -30,20 +33,24 @@ class ProductRepository
         return $query;
     }
 
-    public function getAll(array $filters = [], int $perPage = 10, $columns = ['*'])
+    public function getAll(array $filters = [], int $perPage = 10, $columns = [])
     {
         try {
-            $alloweds = ['name'];
+            $query = Product::query();
+            $query = $this->filters($query, $filters);
 
-            $query = Category::query();
-            $query = $this->filters($query, $filters, $alloweds);
+            if (! $columns) $columns = ['*'];
 
             $data = $query->paginate($perPage, $columns);
 
-            if (! $data->count()) throw new \Exception('Not found', 404);
+            if (! $data->count()) throw new Exception('Not found', 404);
 
             return $data;
-        } catch (\Exception $exception) {
+        } catch (ModelNotFoundException $exception) {
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        } catch (Exception $exception) {
             Log::error($exception->getMessage());
 
             throw $exception;
@@ -54,17 +61,17 @@ class ProductRepository
     {
         try {
             return Category::findOrFail($id);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
 
             throw $exception;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error($exception->getMessage());
 
             throw $exception;
         }
     }
 
-    public function create(array $data)
+    public function create(array $data = [])
     {
         DB::beginTransaction();
 
@@ -74,7 +81,7 @@ class ProductRepository
             DB::commit();
 
             return $category;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
@@ -83,7 +90,7 @@ class ProductRepository
         }
     }
 
-    public function update(?int $id = null, array $data)
+    public function update(?int $id = null, array $data = [])
     {
         DB::beginTransaction();
 
@@ -94,13 +101,13 @@ class ProductRepository
             DB::commit();
 
             return $category;
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
 
             throw $exception;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
@@ -120,13 +127,13 @@ class ProductRepository
             DB::commit();
 
             return $category;
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
 
             throw $exception;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());

@@ -72,16 +72,16 @@ class CategoryRepository
         }
     }
 
-    public function create(array $data)
+    public function create(array $data = [])
     {
         DB::beginTransaction();
 
         try {
-            $product = Category::create($data);
+            $category = Category::create($data);
 
             DB::commit();
 
-            return $product;
+            return $category;
         } catch (Exception $exception) {
             DB::rollBack();
 
@@ -91,17 +91,17 @@ class CategoryRepository
         }
     }
 
-    public function update(?int $id = null, array $data)
+    public function update(?int $id = null, array $data = [])
     {
         DB::beginTransaction();
 
         try {
-            $product = $this->getOne($id);
-            $product->update($data);
+            $category = $this->getOne($id);
+            $category->update($data);
 
             DB::commit();
 
-            return $product;
+            return $category;
         } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
@@ -122,13 +122,12 @@ class CategoryRepository
         DB::beginTransaction();
 
         try {
-            $product = $this->getOne($id);
-
-            $product->delete();
+            $category = $this->getOne($id);
+            $category->delete();
 
             DB::commit();
 
-            return $product;
+            return $category;
         } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
