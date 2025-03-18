@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Repositories\CategoryRepository;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use stdClass;
 
 class CategoryService
 {
@@ -20,6 +21,12 @@ class CategoryService
     {
         try {
             $data = $this->categoryRepository->getAll($filters, $perPage, $columns);
+
+            if (! $columns) {
+                $items = $data->getCollection()->map(fn (Category $category) => CategoryDTO::fromModel($category));
+
+                $data->setCollection($items);
+            }
 
             return [
                 'status' => 'success',

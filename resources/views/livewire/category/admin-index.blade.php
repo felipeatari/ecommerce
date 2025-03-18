@@ -10,7 +10,7 @@
             </a>
         </div>
 
-        <div class="w-full min-h-[350px]">
+        <div class="w-full min-h-[325px]">
             <table class="w-full table-auto text-center">
                 <thead class="border-b-2">
                     <tr>
@@ -62,18 +62,18 @@
             </table>
         </div>
 
-        <div class="w-full h-5 mt-8 flex items-center justify-between">
+        @if ($categories and $categories->hasPages())
+        <div class="w-full h-5 mt-4 flex items-center justify-between">
             <select wire:model.change="selectedPerPage" class="w-[100px] border px-2 py-1">
                 @foreach ($selectPerPage as $amount => $perPage)
                     <option value="{{ $amount }}">{{ $perPage }}</option>
                 @endforeach
             </select>
 
-            @if ($categories and $categories->hasPages())
             <span>Página {{ $categories->currentPage() }}</span>
 
             <div>{{ $categories->links() }}</div>
-            @endif
         </div>
+        @endif
     </div>
 </div>

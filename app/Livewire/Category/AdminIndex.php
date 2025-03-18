@@ -37,15 +37,14 @@ class AdminIndex extends Component
     {
         if ($this->filter and $this->searchByID) {
             $this->filters['id'] = $this->searchByID;
+        } else {
+            unset($this->filters['id']);
         }
 
         if ($this->filter and $this->searchByName) {
             $this->filters['name'] = $this->searchByName;
-        }
-
-        if (!$this->searchByID and !$this->searchByName) {
-            $this->filter = false;
-            $this->filters = [];
+        } else {
+            unset($this->filters['name']);
         }
 
         $data = (new CategoryService((new CategoryRepository)))->getAll(
