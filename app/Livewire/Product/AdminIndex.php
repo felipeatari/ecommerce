@@ -3,34 +3,65 @@
 namespace App\Livewire\Product;
 
 use App\Repositories\ProductRepository;
+use App\Services\ProductService;
+use Illuminate\Http\Request;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class AdminIndex extends Component
 {
+    use WithPagination;
+
     public ?int $searchByID = null;
     public ?string $searchByName = null;
     public array $filters = [];
     public array $columns = ['id', 'name'];
     public bool $filter = false;
+    public $selectPerPage = [
+        5 => 5,
+        10 => 10,
+        50 => 50
+    ];
+    public $selectedPerPage = 5;
+
+    public function updating($property)
+    {
+        if (in_array($property, ['searchByID', 'searchByName', 'selectedPerPage'])) {
+            $this->resetPage();
+        }
+    }
 
     #[Computed()]
     public function products()
     {
         if ($this->filter and $this->searchByID) {
             $this->filters['id'] = $this->searchByID;
+        } else {
+            unset($this->filters['id']);
         }
 
         if ($this->filter and $this->searchByName) {
             $this->filters['name'] = $this->searchByName;
+        } else {
+            unset($this->filters['name']);
         }
 
-        if (!$this->searchByID and !$this->searchByName) {
-            $this->filter = false;
-            $this->filters = [];
+        $data = (new ProductService((new ProductRepository)))->getAll(
+            $this->filters,
+            $this->selectedPerPage,
+            $this->columns
+        );
+
+        if ($data['status'] === 'error') return [];
+
+        if ($data['data']->count() == 0 and isset($this->page) and $this->page > $data['data']->lastPage()) {
+            $filterRedirect['page'] = 1;
+
+            return redirect()->route('admin.product.index', $filterRedirect);
         }
 
-        return (new ProductRepository)->getAll($this->filters, 5, $this->columns);
+        return $data['data'];
     }
 
     public function search()

@@ -62,18 +62,18 @@
             </table>
         </div>
 
-        @if ($categories and $categories->hasPages())
         <div class="w-full h-5 mt-4 flex items-center justify-between">
-            <select wire:model.change="selectedPerPage" class="w-[100px] border px-2 py-1">
+            <select wire:model.change="selectedPerPage" class="w-[150px] border px-2 py-1">
                 @foreach ($selectPerPage as $amount => $perPage)
                     <option value="{{ $amount }}">{{ $perPage }}</option>
                 @endforeach
             </select>
 
+            @if ($categories and $categories->hasPages())
             <span>Página {{ $categories->currentPage() }}</span>
 
             <div>{{ $categories->links() }}</div>
+            @endif
         </div>
-        @endif
     </div>
 </div>

@@ -27,7 +27,7 @@ class AdminIndex extends Component
 
     public function updating($property)
     {
-        if (in_array($property, ['searchByID', 'searchByName'])) {
+        if (in_array($property, ['searchByID', 'searchByName', 'selectedPerPage'])) {
             $this->resetPage();
         }
     }

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\DTO\ProductDTO;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductService
 {
@@ -19,17 +21,18 @@ class ProductService
         try {
             $data = $this->productRepository->getAll($filters, $perPage, $columns);
 
-            $items = $data->getCollection()->map(fn (Product $product) => ProductDTO::fromModel($product));
+            if (! $columns) {
+                $items = $data->getCollection()->map(fn (Product $product) => ProductDTO::fromModel($product));
+
+                $data->setCollection($items);
+            }
 
             return [
-                'current_page' => $data->currentPage(),
-                'last_page' => $data->lastPage(),
-                'total' => $data->total(),
-                'per_page' => $data->perPage(),
-                'links' => $data->appends(request()->query())->links(),
-                'data' => $items
+                'status' => 'success',
+                'code' => 201,
+                'data' => $data,
             ];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return [
                 'status' => 'error',
                 'code' => $exception->getCode(),
@@ -49,13 +52,13 @@ class ProductService
                 'code' => 200,
                 'data' => $item
             ];
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             return [
                 'status' => 'error',
                 'code' => 404,
                 'message' => 'Produto não encontrado',
             ];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return [
                 'status' => 'error',
                 'code' => $exception->getCode(),
@@ -76,7 +79,7 @@ class ProductService
                 'message' => 'Produto criado com Sucesso',
                 'data' => $item
             ];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return [
                 'status' => 'error',
                 'code' => $exception->getCode(),
@@ -97,13 +100,13 @@ class ProductService
                 'message' => 'Produto criado com Sucesso',
                 'data' => $item
             ];
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             return [
                 'status' => 'error',
                 'code' => 404,
                 'message' => 'Produto não encontrado',
             ];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return [
                 'status' => 'error',
                 'code' => $exception->getCode(),
@@ -122,13 +125,13 @@ class ProductService
                 'code' => 200,
                 'message' => 'Produto apagado com sucesso.',
             ];
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             return [
                 'status' => 'error',
                 'code' => 404,
                 'message' => 'Produto não encontrado',
             ];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return [
                 'status' => 'error',
                 'code' => $exception->getCode(),

@@ -36,7 +36,7 @@ class ProductRepository
     public function getAll(array $filters = [], int $perPage = 10, $columns = [])
     {
         try {
-            $query = Product::query();
+            $query = Product::query()->orderByDesc('id');
             $query = $this->filters($query, $filters);
 
             if (! $columns) $columns = ['*'];
@@ -60,7 +60,7 @@ class ProductRepository
     public function getOne(?int $id = null)
     {
         try {
-            return Category::findOrFail($id);
+            return Product::findOrFail($id);
         } catch (ModelNotFoundException $exception) {
 
             throw $exception;
@@ -76,11 +76,11 @@ class ProductRepository
         DB::beginTransaction();
 
         try {
-            $category = Category::create($data);
+            $product = Product::create($data);
 
             DB::commit();
 
-            return $category;
+            return $product;
         } catch (Exception $exception) {
             DB::rollBack();
 
@@ -95,12 +95,12 @@ class ProductRepository
         DB::beginTransaction();
 
         try {
-            $category = $this->getOne($id);
-            $category->update($data);
+            $product = $this->getOne($id);
+            $product->update($data);
 
             DB::commit();
 
-            return $category;
+            return $product;
         } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
@@ -120,13 +120,13 @@ class ProductRepository
     {
         DB::beginTransaction();
         try {
-            $category = $this->getOne($id);
+            $product = $this->getOne($id);
 
-            $category->delete();
+            $product->delete();
 
             DB::commit();
 
-            return $category;
+            return $product;
         } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
