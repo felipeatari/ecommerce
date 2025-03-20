@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Models\Category;
+use App\Models\Brand;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class CategoryRepository
+class BrandRepository
 {
     private array $alloweds = ['id', 'name', 'active'];
 
@@ -37,7 +37,7 @@ class CategoryRepository
     public function getAll(array $filters = [], int $perPage = 10, array $columns = [])
     {
         try {
-            $query = Category::query()->orderByDesc('id');
+            $query = Brand::query()->orderByDesc('id');
             $query = $this->filters($query, $filters);
 
             if (! $columns) $columns = ['*'];
@@ -61,7 +61,7 @@ class CategoryRepository
     public function getOne(?int $id = null)
     {
         try {
-            return Category::findOrFail($id);
+            return Brand::findOrFail($id);
         } catch (ModelNotFoundException $exception) {
             Log::error($exception->getMessage());
 
@@ -78,11 +78,11 @@ class CategoryRepository
         DB::beginTransaction();
 
         try {
-            $category = Category::create($data);
+            $brand = Brand::create($data);
 
             DB::commit();
 
-            return $category;
+            return $brand;
         } catch (Exception $exception) {
             DB::rollBack();
 
@@ -97,12 +97,12 @@ class CategoryRepository
         DB::beginTransaction();
 
         try {
-            $category = $this->getOne($id);
-            $category->update($data);
+            $brand = $this->getOne($id);
+            $brand->update($data);
 
             DB::commit();
 
-            return $category;
+            return $brand;
         } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
@@ -123,12 +123,12 @@ class CategoryRepository
         DB::beginTransaction();
 
         try {
-            $category = $this->getOne($id);
-            $category->delete();
+            $brand = $this->getOne($id);
+            $brand->delete();
 
             DB::commit();
 
-            return $category;
+            return $brand;
         } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 

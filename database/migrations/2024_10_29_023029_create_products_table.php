@@ -17,21 +17,16 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Category::class)
-                ->cascadeOnDelete()
+                ->nullOnDelete()
                 ->cascadeOnUpdate()
                 ->constrained();
             $table->foreignIdFor(Brand::class)
                 ->nullable()
-                ->cascadeOnDelete()
+                ->nullOnDelete()
                 ->cascadeOnUpdate()
                 ->constrained();
             $table->string('name');
             $table->string('slug')->nullable();
-            $table->foreignIdFor(Category::class, 'brand')
-            ->nullable()
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate()
-            ->constrained();
             $table->text('description')->nullable();
             $table->boolean('active')->default(true);
             $table->foreignIdFor(User::class, 'created_by')

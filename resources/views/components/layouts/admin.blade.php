@@ -25,6 +25,7 @@
 
                     $products = [
                         'admin.category.index' => 'Categorias',
+                        'admin.brand.index' => 'Marcas',
                         'admin.product.index' => 'Produtos',
                         'admin.variation.index' => 'Variações',
                         'admin.sku.index' => 'Skus',

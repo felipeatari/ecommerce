@@ -24,7 +24,6 @@ class ProductFactory extends Factory
             'category_id' => Category::class,
             'name' => $name,
             'slug' => Str::slug($name),
-            'brand' => null,
             'description' => fake()->text(),
             'active' => true,
         ];

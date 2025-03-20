@@ -8,6 +8,7 @@ class CategoryDTO
 {
     public ?int $id;
     public ?string $name;
+    public ?string $slug;
     public ?bool $parent;
     public ?bool $brand;
     public ?bool $active;
@@ -16,6 +17,7 @@ class CategoryDTO
     {
         $this->id = $category['id'];
         $this->name = $category['name'];
+        $this->slug = $category['slug'];
         $this->parent = $category['parent'];
         $this->brand = $category['brand'];
         $this->active = $category['active'];
@@ -26,6 +28,7 @@ class CategoryDTO
         $data = [
             'id' => $this->id,
             'name' => $this->name,
+            'slug' => $this->slug,
             'parent' => $this->parent,
             'brand' => $this->brand,
             'active' => $this->active,

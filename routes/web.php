@@ -29,7 +29,13 @@ use App\Livewire\Category\AdminShow as AdminCategoryShow;
 use App\Livewire\Category\AdminCreate as AdminCategoryCreate;
 use App\Livewire\Category\AdminUpdate as AdminCategoryUpdate;
 
-// Área do Cliente
+// Gerenciar marca
+use App\Livewire\Brand\AdminIndex as AdminBrandIndex;
+use App\Livewire\Brand\AdminShow as AdminBrandShow;
+use App\Livewire\Brand\AdminCreate as AdminBrandCreate;
+use App\Livewire\Brand\AdminUpdate as AdminBrandUpdate;
+
+// Área do cliente
 use App\Livewire\Customer\Index as CustomerIndex;
 use App\Livewire\Customer\Info as CustomerInfo;
 
@@ -91,6 +97,16 @@ Route::middleware('auth')->group(function($route) {
         Route::get('/ver/{category}', AdminCategoryShow::class)->name('admin.category.show');
         Route::get('/cadastrar', AdminCategoryCreate::class)->name('admin.category.create');
         Route::get('/editar/{category}', AdminCategoryUpdate::class)->name('admin.category.update');
+    });
+
+    Route::group([
+        'prefix' => 'admin/brand',
+        'middleware' => VerifyUserIsAdmin::class,
+    ], function($route) {
+        Route::get('/listar', AdminBrandIndex::class)->name('admin.brand.index');
+        Route::get('/ver/{brand}', AdminBrandShow::class)->name('admin.brand.show');
+        Route::get('/cadastrar', AdminBrandCreate::class)->name('admin.brand.create');
+        Route::get('/editar/{brand}', AdminBrandUpdate::class)->name('admin.brand.update');
     });
 
     Route::group([
