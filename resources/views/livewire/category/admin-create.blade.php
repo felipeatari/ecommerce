@@ -1,16 +1,15 @@
 <div class="w-full flex justify-center px-3">
     <form wire:submit.prevent="store" class="bg-white w-full px-10 py-5 shadow">
         <div class="w-full flex justify-between my-5">
-            <button
+            <a
+                href="{{ route('admin.category.index') }}"
                 class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
-                onclick="window.history.back()"
-            >
+             >
                 <x-icons.back />
-            </button>
+            </a>
 
             <button
                 wire:click="store"
-                type="button"
                 class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
             >
                 Salvar

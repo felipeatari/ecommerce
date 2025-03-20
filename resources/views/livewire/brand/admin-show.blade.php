@@ -1,24 +1,23 @@
 <div class="w-full flex justify-center px-3">
     <div class="w-full bg-white px-10 py-5 shadow">
         <div class="w-full flex justify-between my-5">
-            <button
+            <a
+                href="{{ route('admin.brand.index') }}"
                 class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
-                onclick="window.history.back()"
             >
                 <x-icons.back />
-            </button>
+            </a>
 
             <div>
-                <a
-                    href="{{ route('admin.brand.update', ['brand' => $brand->id]) }}" >
+                <a href="{{ route('admin.brand.update', $brand->id) }}">
                     <button class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1">
                         Editar
                     </button>
                 </a>
 
                 <button
-                wire:click="modalDelete"
-                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
+                    wire:click="modalDelete"
+                    class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
                 >
                     Apagar
                 </button>

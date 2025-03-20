@@ -2,24 +2,18 @@
     <form wire:submit.prevent="update" class="bg-white w-full px-10 py-5 shadow">
         <div class="w-full flex justify-between my-5">
             <a
-                href="{{ route('admin.brand.show', ['brand' => $brand->id]) }}"
+                href="{{ route('admin.brand.show', $brand->id) }}"
+                class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
             >
-                <button
-                    class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
-                    onclick="window.history.back()"
-                >
-                    <x-icons.back />
-                </button>
+                <x-icons.back />
             </a>
 
-            <div>
-                <button
-                    wire:click="update"
-                    class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
-                >
-                    Salvar
-                </button>
-            </div>
+            <button
+                wire:click="update"
+                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
+            >
+                Salvar
+            </button>
         </div>
 
         <h1 class="font-bold my-10">Editar Marca {{ $brand->id }}</h1>

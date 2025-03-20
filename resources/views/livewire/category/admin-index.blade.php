@@ -45,7 +45,7 @@
                         <td class="border p-3">
                             <a
                                 class=" flex items-center justify-center"
-                                href="{{ route('admin.category.show', ['category' => $category->id]) }}"
+                                href="{{ route('admin.category.show', $category->id) }}"
                             >
                                 <x-icons.show />
                             </a>

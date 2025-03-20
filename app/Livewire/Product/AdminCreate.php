@@ -2,8 +2,11 @@
 
 namespace App\Livewire\Product;
 
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use App\Repositories\ProductRepository;
+use App\Services\ProductService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -15,9 +18,8 @@ class AdminCreate extends Component
     public Product $product;
 
     public ?int $categoryId = null;
+    public ?int $brandId = null;
     public string $name = '';
-    public string $slug = '';
-    public ?int $brand = null;
     public string $description = '';
     public bool $active = true;
 
@@ -38,57 +40,48 @@ class AdminCreate extends Component
     }
 
     #[Computed()]
-    public function categories()
+    public function category()
     {
-        return Category::query()->orderByDesc('id')->get();
+        return Category::query()
+            ->orderByDesc('id')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
+    #[Computed()]
+    public function brand()
+    {
+        return Brand::query()
+            ->orderByDesc('id')
+            ->pluck('name', 'id')
+            ->toArray();
     }
 
     public function store()
     {
         $this->validate();
 
-        DB::beginTransaction();
+        $data = (new ProductService(new ProductRepository))->create([
+            'category_id' => $this->categoryId,
+            'brand_id' => $this->brandId,
+            'name' => $this->name,
+            'slug' => Str::slug($this->name),
+            'description' => $this->description,
+            'active' => $this->active,
+        ]);
 
-        try {
-            $this->slug = Str::slug($this->name);
-
-            Product::create([
-                'category_id' => $this->categoryId,
-                'name' => $this->name,
-                'slug' => $this->slug,
-                'description' => $this->description,
-                'brand' => $this->brand,
-                'active' => $this->active,
-            ]);
-
-            DB::commit();
-
-            return $this->js('alert("Produto criado com sucesso.")');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        return redirect()->route('admin.product.index');
     }
 
     public function render()
     {
-        $categories = [];
-        $brands = [];
-
-        foreach ($this->categories as $category):
-            if ($category->brand) {
-                $brands[] = $category;
-            }
-
-            if (! $category->brand) {
-                $categories[] = $category;
-            }
-        endforeach;
-
         return view('livewire.product.admin-create', [
-            'categories' => $categories,
-            'brands' => $brands,
+            'category' => $this->category(),
+            'brand' => $this->brand(),
         ])->layout('components.layouts.admin');
     }
 }

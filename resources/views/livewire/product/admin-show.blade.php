@@ -2,23 +2,22 @@
     <div class="w-full bg-white px-10 py-5 shadow">
         <div class="w-full flex justify-between my-5">
             <a
-            wire:navigate
-            class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
-            href="/admin/produto/listar"
+                href="{{ route('admin.product.index') }}"
+                class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
             >
                 <x-icons.back />
             </a>
 
             <div>
-                <a wire:navigate href="/admin/produto/editar/{{ $product->id }}" >
+                <a href="{{ route('admin.product.update', $product->id) }}">
                     <button class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1">
                         Editar
                     </button>
                 </a>
 
                 <button
-                wire:click="modalDelete"
-                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
+                    wire:click="modalDelete"
+                    class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
                 >
                     Apagar
                 </button>

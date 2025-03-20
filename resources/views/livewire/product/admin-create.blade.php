@@ -2,13 +2,18 @@
     <form wire:submit.prevent="store" class="bg-white w-full px-10 py-5 shadow">
         <div class="w-full flex justify-between my-5">
             <a
-            wire:navigate
-            class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
-            href="/admin/produto/listar"
+                href="{{ route('admin.product.index') }}"
+                class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
             >
                 <x-icons.back />
             </a>
-            <button type="button" class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1" wire:click="store">Salvar</button>
+
+            <button
+                wire:click="store"
+                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
+            >
+                Salvar
+            </button>
         </div>
 
         <h1 class="font-bold my-10">Cadastrar um Produto</h1>
@@ -33,12 +38,12 @@
                 <span class="px-2 py-1 font-semibold">Categoria:</span>
                 <select wire:model="categoryId" class="w-[200px] border px-2 py-1">
                     <option value="{{ null }}">Selecionar</option>
-                    @foreach ($categories as $category)
+                    @foreach ($category as $id => $name)
                     <option
-                    value="{{ $category->id }}"
-                    wire:key="{{ $category->id }}"
+                        value="{{ $id }}"
+                        wire:key="{{ $id }}"
                     >
-                        {{ $category->name }}
+                        {{ $name }}
                     </option>
                     @endforeach
                 </select>
@@ -46,14 +51,14 @@
 
             <div>
                 <span class="px-2 py-1 font-semibold">Marca:</span>
-                <select wire:model="brand" class="w-[200px] border px-2 py-1">
+                <select wire:model="brandId" class="w-[200px] border px-2 py-1">
                     <option value="{{ null }}">Selecionar</option>
-                    @foreach ($brands as $brand)
+                    @foreach ($brand as $id => $name)
                     <option
-                    value="{{ $brand->id }}"
-                    wire:key="{{ $brand->id }}"
+                        value="{{ $id }}"
+                        wire:key="{{ $id }}"
                     >
-                        {{ $brand->name }}
+                        {{ $name }}
                     </option>
                     @endforeach
                 </select>
