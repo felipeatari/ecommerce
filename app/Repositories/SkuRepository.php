@@ -85,7 +85,35 @@ class SkuRepository
 
         try {
             $sku = $this->getOne($id);
+
             $sku->update($data);
+
+            DB::commit();
+
+            return $sku;
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            DB::rollBack();
+
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        }
+    }
+
+    public function remove(?int $id = null)
+    {
+        DB::beginTransaction();
+
+        try {
+            $sku = $this->getOne($id);
+
+            $sku->delete();
 
             DB::commit();
 

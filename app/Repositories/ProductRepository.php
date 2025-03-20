@@ -116,13 +116,41 @@ class ProductRepository
         }
     }
 
-    public function delete(?int $id = null)
+    public function remove(?int $id = null)
     {
         DB::beginTransaction();
+
         try {
             $product = $this->getOne($id);
 
             $product->delete();
+
+            DB::commit();
+
+            return $product;
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            DB::rollBack();
+
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        }
+    }
+
+    public function delete(?int $id = null)
+    {
+        DB::beginTransaction();
+
+        try {
+            $product = $this->getOne($id);
+
+            $product->forceDelete();
 
             DB::commit();
 

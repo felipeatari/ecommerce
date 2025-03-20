@@ -55,12 +55,6 @@ class AdminIndex extends Component
 
         if ($data['status'] === 'error') return [];
 
-        if ($data['data']->count() == 0 and isset($this->page) and $this->page > $data['data']->lastPage()) {
-            $filterRedirect['page'] = 1;
-
-            return redirect()->route('admin.category.index', $filterRedirect);
-        }
-
         return $data['data'];
     }
 

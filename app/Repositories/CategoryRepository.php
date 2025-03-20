@@ -118,13 +118,41 @@ class CategoryRepository
         }
     }
 
+    public function remove(?int $id = null)
+    {
+        DB::beginTransaction();
+
+        try {
+            $category = $this->getOne($id);
+
+            $category->delete();
+
+            DB::commit();
+
+            return $category;
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            DB::rollBack();
+
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        }
+    }
+
     public function delete(?int $id = null)
     {
         DB::beginTransaction();
 
         try {
             $category = $this->getOne($id);
-            $category->delete();
+
+            $category->forceDelete();
 
             DB::commit();
 

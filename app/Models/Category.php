@@ -10,6 +10,8 @@ class Category extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const DELETED_AT = 'removed_at';
+
     protected $fillable = [
         'name',
         'parent',
@@ -17,10 +19,21 @@ class Category extends Model
         'active',
         'created_by',
         'updated_by',
-        'deleted_by',
+        'removed_by',
     ];
 
     protected $dates = [
-        'deleted_at',
+        'removed_at',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($category) {
+            $category->active = false;
+            $category->removed_by = auth()?->id();
+            $category->save();
+        });
+    }
 }

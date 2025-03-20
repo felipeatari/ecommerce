@@ -21,7 +21,6 @@ class AdminCreate extends Component
     public ?int $brandId = null;
     public string $name = '';
     public string $description = '';
-    public bool $active = true;
 
     protected function rules()
     {
@@ -67,7 +66,6 @@ class AdminCreate extends Component
             'name' => $this->name,
             'slug' => Str::slug($this->name),
             'description' => $this->description,
-            'active' => $this->active,
         ]);
 
         if ($data['status'] === 'error') {

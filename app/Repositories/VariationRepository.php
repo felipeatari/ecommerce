@@ -105,13 +105,43 @@ class VariationRepository
         }
     }
 
-    public function delete(?int $id = null)
+    public function remove(?int $id = null)
     {
         DB::beginTransaction();
+
         try {
             $variation = $this->getOne($id);
 
             $variation->delete();
+
+            $user->fill(['deleted_by' => userId()])->save();
+
+            DB::commit();
+
+            return $variation;
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            DB::rollBack();
+
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        }
+    }
+
+    public function delete(?int $id = null)
+    {
+        DB::beginTransaction();
+
+        try {
+            $variation = $this->getOne($id);
+
+            $variation->forceDelete();
 
             DB::commit();
 

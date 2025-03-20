@@ -56,15 +56,6 @@
                 <span class="px-2 py-1 font-semibold">Marca:</span>
                 <div class="w-[200px] px-2 py-1 border">{{ $brand }}</div>
             </div>
-
-            <div class="flex">
-                <span class="px-2 py-1 font-semibold">Ativo:</span>
-                @if ($product->active)
-                <div class="w-[100px] px-2 py-1 border">Sim</div>
-                @else
-                <div class="w-[100px] px-2 py-1 border">Não</div>
-                @endif
-            </div>
         </div>
 
         <div class="my-5">

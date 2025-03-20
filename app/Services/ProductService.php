@@ -56,7 +56,7 @@ class ProductService
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Produto não encontrado',
+                'message' => 'Produto não encontrado.',
             ];
         } catch (Exception $exception) {
             return [
@@ -76,7 +76,7 @@ class ProductService
             return [
                 'status' => 'success',
                 'code' => 201,
-                'message' => 'Produto criado com Sucesso',
+                'message' => 'Produto criado com sucesso.',
                 'data' => $item
             ];
         } catch (Exception $exception) {
@@ -97,14 +97,39 @@ class ProductService
             return [
                 'status' => 'success',
                 'code' => 200,
-                'message' => 'Produto criado com Sucesso',
+                'message' => 'Produto criado com sucesso.',
                 'data' => $item
             ];
         } catch (ModelNotFoundException $exception) {
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Produto não encontrado',
+                'message' => 'Produto não encontrado.',
+            ];
+        } catch (Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
+    }
+
+    public function remove(?int $id = null)
+    {
+        try {
+            $this->brandRepository->remove($id);
+
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Produto removido com sucesso.',
+            ];
+        } catch (ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Produto não encontrado.',
             ];
         } catch (Exception $exception) {
             return [
@@ -129,7 +154,7 @@ class ProductService
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Produto não encontrado',
+                'message' => 'Produto não encontrado.',
             ];
         } catch (Exception $exception) {
             return [

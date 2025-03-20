@@ -37,7 +37,7 @@ class BrandService
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Categorias não encontradas.',
+                'message' => 'Marcas não encontradas.',
             ];
         } catch (Exception $exception) {
             return [
@@ -63,7 +63,7 @@ class BrandService
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Categoria não encontrado',
+                'message' => 'Marca não encontrada.',
             ];
         }
     }
@@ -77,7 +77,7 @@ class BrandService
             return [
                 'status' => 'success',
                 'code' => 201,
-                'message' => 'Categoria criado com sucesso',
+                'message' => 'Marca criado com sucesso.',
                 'data' => $item
             ];
         } catch (Exception $exception) {
@@ -98,14 +98,14 @@ class BrandService
             return [
                 'status' => 'success',
                 'code' => 200,
-                'message' => 'Categoria criado com sucesso',
+                'message' => 'Marca criado com sucesso.',
                 'data' => $item
             ];
         } catch (ModelNotFoundException $exception) {
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Categoria não encontrado',
+                'message' => 'Marca não encontrada.',
             ];
         } catch (Exception $exception) {
             return [
@@ -116,7 +116,32 @@ class BrandService
         }
     }
 
-    public function delete($id)
+    public function remove(?int $id = null)
+    {
+        try {
+            $this->brandRepository->remove($id);
+
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Marca removida com sucesso.',
+            ];
+        } catch (ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Marca não encontrada.',
+            ];
+        } catch (Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
+    }
+
+    public function delete(?int $id = null)
     {
         try {
             $this->brandRepository->delete($id);
@@ -124,13 +149,13 @@ class BrandService
             return [
                 'status' => 'success',
                 'code' => 200,
-                'message' => 'Categoria apagado com sucesso.',
+                'message' => 'Marca apagado com sucesso.',
             ];
         } catch (ModelNotFoundException $exception) {
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Categoria não encontrado',
+                'message' => 'Marca não encontrada.',
             ];
         } catch (Exception $exception) {
             return [

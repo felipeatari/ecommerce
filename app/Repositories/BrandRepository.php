@@ -118,13 +118,41 @@ class BrandRepository
         }
     }
 
+    public function remove(?int $id = null)
+    {
+        DB::beginTransaction();
+
+        try {
+            $brand = $this->getOne($id);
+
+            $brand->delete();
+
+            DB::commit();
+
+            return $brand;
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            DB::rollBack();
+
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        }
+    }
+
     public function delete(?int $id = null)
     {
         DB::beginTransaction();
 
         try {
             $brand = $this->getOne($id);
-            $brand->delete();
+
+            $brand->forceDelete();
 
             DB::commit();
 

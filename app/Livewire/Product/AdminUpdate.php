@@ -22,7 +22,6 @@ class AdminUpdate extends Component
     public string $name = '';
     public string $slug = '';
     public string $description = '';
-    public bool $active = true;
 
     protected function rules()
     {
@@ -68,7 +67,6 @@ class AdminUpdate extends Component
             'name' => $this->name,
             'slug' => Str::slug($this->name),
             'description' => $this->description,
-            'active' => $this->active,
         ]);
 
         if ($data['status'] === 'error') {

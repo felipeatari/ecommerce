@@ -100,7 +100,7 @@ Route::middleware('auth')->group(function($route) {
     });
 
     Route::group([
-        'prefix' => 'admin/brand',
+        'prefix' => 'admin/marca',
         'middleware' => VerifyUserIsAdmin::class,
     ], function($route) {
         Route::get('/listar', AdminBrandIndex::class)->name('admin.brand.index');

@@ -40,7 +40,7 @@ class AdminShow extends Component
 
     public function destroy()
     {
-        $data = (new CategoryService(new CategoryRepository))->delete($this->category->id);
+        $data = (new CategoryService(new CategoryRepository))->remove($this->category->id);
 
         if ($data['status'] === 'error') {
             return $this->addError('db', $data['message']);

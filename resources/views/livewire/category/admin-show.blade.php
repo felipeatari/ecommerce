@@ -55,15 +55,6 @@
                     {{ $this->parent($category->parent) }}
                 </div>
             </div>
-
-            <div class="flex">
-                <span class="px-2 py-1 font-semibold">Ativo:</span>
-                @if ($category->active)
-                    <div class="w-[100px] px-2 py-1 border">Sim</div>
-                @else
-                    <div class="w-[100px] px-2 py-1 border">Não</div>
-                @endif
-            </div>
         </div>
     </div>
 </div>

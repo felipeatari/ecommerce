@@ -25,7 +25,7 @@ class AdminShow extends Component
 
     public function destroy()
     {
-        $data = (new ProductService(new ProductRepository))->delete($this->product->id);
+        $data = (new ProductService(new ProductRepository))->remove($this->product->id);
 
         if ($data['status'] === 'error') {
             return $this->addError('db', $data['message']);

@@ -10,6 +10,8 @@ class Product extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const DELETED_AT = 'removed_at';
+
     protected $fillable = [
         'category_id',
         'brand_id',
@@ -19,12 +21,23 @@ class Product extends Model
         'active',
         'created_by',
         'updated_by',
-        'deleted_by',
+        'removed_by',
     ];
 
     protected $dates = [
-        'deleted_at',
+        'removed_at',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($product) {
+            $product->active = false;
+            $product->removed_by = auth()?->id();
+            $product->save();
+        });
+    }
 
     public function category()
     {

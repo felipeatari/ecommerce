@@ -23,7 +23,7 @@ class AdminShow extends Component
 
     public function destroy()
     {
-        $data = (new BrandService(new BrandRepository))->delete($this->brand->id);
+        $data = (new BrandService(new BrandRepository))->remove($this->brand->id);
 
         if ($data['status'] === 'error') {
             return $this->addError('db', $data['message']);

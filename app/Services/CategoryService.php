@@ -63,7 +63,7 @@ class CategoryService
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Categoria não encontrado',
+                'message' => 'Categoria não encontrada.',
             ];
         }
     }
@@ -77,7 +77,7 @@ class CategoryService
             return [
                 'status' => 'success',
                 'code' => 201,
-                'message' => 'Categoria criado com sucesso',
+                'message' => 'Categoria criado com sucesso.',
                 'data' => $item
             ];
         } catch (Exception $exception) {
@@ -89,7 +89,7 @@ class CategoryService
         }
     }
 
-    public function update(?int $id, array $data)
+    public function update(?int $id = null, array $data = [])
     {
         try {
             $data = $this->categoryRepository->update($id, $data);
@@ -98,14 +98,14 @@ class CategoryService
             return [
                 'status' => 'success',
                 'code' => 200,
-                'message' => 'Categoria criado com sucesso',
+                'message' => 'Categoria criado com sucesso.',
                 'data' => $item
             ];
         } catch (ModelNotFoundException $exception) {
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Categoria não encontrado',
+                'message' => 'Categoria não encontrada.',
             ];
         } catch (Exception $exception) {
             return [
@@ -116,7 +116,32 @@ class CategoryService
         }
     }
 
-    public function delete($id)
+    public function remove(?int $id = null)
+    {
+        try {
+            $this->categoryRepository->remove($id);
+
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Categoria removida com sucesso.',
+            ];
+        } catch (ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Categoria não encontrada.',
+            ];
+        } catch (Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
+    }
+
+    public function delete(?int $id = null)
     {
         try {
             $this->categoryRepository->delete($id);
@@ -130,7 +155,7 @@ class CategoryService
             return [
                 'status' => 'error',
                 'code' => 404,
-                'message' => 'Categoria não encontrado',
+                'message' => 'Categoria não encontrada.',
             ];
         } catch (Exception $exception) {
             return [
