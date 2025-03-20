@@ -9,6 +9,7 @@
             </a>
 
             <button
+                type="button"
                 wire:click="update"
                 class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
             >
@@ -47,6 +48,11 @@
                     </option>
                     @endforeach
                 </select>
+            </div>
+
+            <div class="flex items-center">
+                <span class="px-2 py-1 font-semibold">Ativo:</span>
+                <input class="w-5 h-5" wire:model="active" type="checkbox">
             </div>
         </div>
     </form>

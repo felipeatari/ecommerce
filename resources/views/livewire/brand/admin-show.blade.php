@@ -47,6 +47,15 @@
                 <div class="w-full px-2 py-1 border">
                     {{ $brand->name }}
                 </div>
+
+                <div class="flex">
+                    <span class="px-2 py-1 font-semibold">Ativo:</span>
+                    @if ($brand->active)
+                        <div class="w-[100px] px-2 py-1 border">Sim</div>
+                    @else
+                        <div class="w-[100px] px-2 py-1 border">Não</div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

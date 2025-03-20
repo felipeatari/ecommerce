@@ -9,6 +9,7 @@
             </a>
 
             <button
+                type="button"
                 wire:click="store"
                 class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
             >
@@ -19,11 +20,11 @@
         <h1 class="font-bold my-10">Cadastrar um Produto</h1>
 
         @if ($errors->any())
-        <div class="w-full flex flex-col border border-red-200 bg-red-100 text-red-600 px-2 py-1 my-5">
-        @foreach ($errors->all() as $error)
-            <span>{{ $error }}</span>
-        @endforeach
-        </div>
+            <div class="w-full flex flex-col border border-red-200 bg-red-100 text-red-600 px-2 py-1 my-5">
+                @foreach ($errors->all() as $error)
+                    <span>{{ $error }}</span>
+                @endforeach
+            </div>
         @endif
 
         <div class="w-full flex flex-col my-10">

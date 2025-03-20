@@ -14,6 +14,7 @@ class AdminUpdate extends Component
 {
     public Brand $brand;
     public string $name = '';
+    public bool $active = true;
 
     protected function rules()
     {
@@ -25,14 +26,14 @@ class AdminUpdate extends Component
         return ['name.required' => 'O campo nome é obrigatório'];
     }
 
-
     public function update()
     {
         $this->validate();
 
         $data = (new BrandService(new BrandRepository))->update($this->brand->id, [
             'name' => $this->name,
-            'slug' => slug($this->name)
+            'slug' => slug($this->name),
+            'active' => $this->active,
         ]);
 
         if ($data['status'] === 'error') {
@@ -45,7 +46,7 @@ class AdminUpdate extends Component
     public function render()
     {
         $this->name = $this->brand->name;
-        $this->parent = $this->brand->parent;
+        $this->active = $this->brand->active;
 
         return view('livewire.brand.admin-update')->layout('components.layouts.admin');
     }

@@ -13,6 +13,7 @@ class AdminCreate extends Component
 {
     public string $name = '';
     public ?int $parent = null;
+    public bool $active = true;
 
     protected function rules()
     {
@@ -30,8 +31,8 @@ class AdminCreate extends Component
 
         $data = (new BrandService(new BrandRepository))->create([
             'name' => $this->name,
-            'parent' => $this->parent,
-            'slug' => slug($this->name)
+            'slug' => slug($this->name),
+            'active' => $this->active,
         ]);
 
         if ($data['status'] === 'error') {

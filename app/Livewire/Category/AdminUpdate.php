@@ -15,6 +15,7 @@ class AdminUpdate extends Component
     public Category $category;
     public string $name = '';
     public ?int $parent = null;
+    public bool $active = true;
 
     protected function rules()
     {
@@ -39,7 +40,8 @@ class AdminUpdate extends Component
         $data = (new CategoryService(new CategoryRepository))->update($this->category->id, [
             'name' => $this->name,
             'parent' => $this->parent,
-            'slug' => slug($this->name)
+            'slug' => slug($this->name),
+            'active' => $this->active,
         ]);
 
         if ($data['status'] === 'error') {
@@ -53,6 +55,7 @@ class AdminUpdate extends Component
     {
         $this->name = $this->category->name;
         $this->parent = $this->category->parent;
+        $this->active = $this->category->active;
 
         return view('livewire.category.admin-update', [
             'categories' => $this->categories
