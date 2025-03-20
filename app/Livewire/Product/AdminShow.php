@@ -4,6 +4,8 @@ namespace App\Livewire\Product;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Repositories\ProductRepository;
+use App\Services\ProductService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -23,19 +25,13 @@ class AdminShow extends Component
 
     public function destroy()
     {
-        DB::beginTransaction();
+        $data = (new ProductService(new ProductRepository))->delete($this->product->id);
 
-        try {
-            $this->product->delete();
-
-            DB::commit();
-
-            return redirect(route('admin.product.index'));
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        return redirect()->route('admin.product.index');
     }
 
     public function render()

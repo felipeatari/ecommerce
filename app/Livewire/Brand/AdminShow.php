@@ -4,6 +4,8 @@ namespace App\Livewire\Brand;
 
 use App\Models\Brand;
 use App\Models\Product;
+use App\Repositories\BrandRepository;
+use App\Services\BrandService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -21,22 +23,13 @@ class AdminShow extends Component
 
     public function destroy()
     {
-        DB::beginTransaction();
+        $data = (new BrandService(new BrandRepository))->delete($this->brand->id);
 
-        try {
-            // Product::where('brand_id', $this->brand->id)
-            //     ->update(['brand_id' => null]);
-
-            $this->brand->delete();
-
-            DB::commit();
-
-            return redirect(route('admin.brand.index'));
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        return redirect()->route('admin.brand.index');
     }
 
     public function render()

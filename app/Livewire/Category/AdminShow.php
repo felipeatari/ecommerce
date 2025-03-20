@@ -4,6 +4,8 @@ namespace App\Livewire\Category;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Repositories\CategoryRepository;
+use App\Services\CategoryService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -38,22 +40,13 @@ class AdminShow extends Component
 
     public function destroy()
     {
-        DB::beginTransaction();
+        $data = (new CategoryService(new CategoryRepository))->delete($this->category->id);
 
-        try {
-            Product::where('category_id', $this->category->id)
-                ->update(['category_id' => null]);
-
-            $this->category->delete();
-
-            DB::commit();
-
-            return redirect(route('admin.category.index'));
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        return redirect()->route('admin.category.index');
     }
 
     public function render()
