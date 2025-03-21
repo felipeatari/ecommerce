@@ -4,7 +4,7 @@
             <h1 class="font-semibold">Categorias</h1>
             <a
                 href="{{ route('admin.category.create') }}"
-                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
+                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1 rounded-md"
             >
                 Cadastar
             </a>
@@ -63,16 +63,16 @@
         </div>
 
         <div class="w-full h-5 mt-4 flex items-center justify-between">
-            <select wire:model.change="selectedPerPage" class="w-[150px] border px-2 py-1">
-                @foreach ($selectPerPage as $amount => $perPage)
-                    <option value="{{ $amount }}">{{ $perPage }}</option>
-                @endforeach
+            <select wire:model.change="selectedPerPage" class="w-[150px] border px-2 py-1 rounded-md">
+                <option value="5">5 por página</option>
+                <option value="10">10 por página</option>
+                <option value="50">50 por página</option>
             </select>
 
             @if ($categories and $categories->hasPages())
             <span>Página {{ $categories->currentPage() }}</span>
 
-            <div>{{ $categories->links('vendor.pagination.tailwind') }}</div>
+            <div>{{ $categories->links() }}</div>
             @endif
         </div>
     </div>

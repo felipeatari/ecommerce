@@ -18,11 +18,7 @@ class AdminIndex extends Component
     public array $filters = [];
     public array $columns = ['id', 'name'];
     public bool $filter = false;
-    public $selectPerPage = [
-        5 => 5,
-        10 => 10,
-        50 => 50
-    ];
+
     public $selectedPerPage = 5;
 
     public function updating($property)

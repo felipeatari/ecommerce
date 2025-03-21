@@ -15,20 +15,11 @@ class AdminIndex extends Component
 
     public ?int $searchByID = null;
     public ?string $searchByType = null;
-    public $selectType = [
-        'size' => 'Tamanho',
-        'color' => 'Cor',
-    ];
     public ?string $searchByValue = null;
     public array $filters = [];
     public array $columns = ['id', 'type', 'value'];
     public bool $filter = false;
-    public $selectPerPage = [
-        5 => 5,
-        10 => 10,
-        50 => 50
-    ];
-    public $selectedPerPage = 5;
+    public int $selectedPerPage = 5;
 
     public function updating($property)
     {

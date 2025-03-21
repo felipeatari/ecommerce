@@ -11,7 +11,7 @@
             <button
                 type="button"
                 wire:click="update"
-                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
+                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1 rounded-md"
             >
                 Salvar
             </button>

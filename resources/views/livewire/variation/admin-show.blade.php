@@ -10,14 +10,14 @@
 
             <div>
                 <a href="{{ route('admin.variation.update', $variation->id) }}">
-                    <button class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1">
+                    <button class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1 rounded-md">
                         Editar
                     </button>
                 </a>
 
                 <button
                     wire:click="modalDelete"
-                    class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
+                    class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1 rounded-md"
                 >
                     Apagar
                 </button>
