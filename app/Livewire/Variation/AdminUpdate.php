@@ -3,6 +3,8 @@
 namespace App\Livewire\Variation;
 
 use App\Models\Variation;
+use App\Repositories\VariationRepository;
+use App\Services\VariationService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -35,23 +37,18 @@ class AdminUpdate extends Component
     {
         $this->validate();
 
-        DB::beginTransaction();
+        $data = (new VariationService(new VariationRepository))->update($this->variation->id, [
+            'type' => $this->type,
+            'value' => $this->value,
+            'code' => $this->code,
+            'extra' => $this->extra,
+        ]);
 
-        try {
-            $this->variation->type = $this->type;
-            $this->variation->value = $this->value;
-            $this->variation->code = $this->code;
-            $this->variation->extra = $this->extra;
-            $this->variation->save();
-
-            DB::commit();
-
-            return $this->js('alert("Variação editada com sucesso.")');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        return redirect()->route('admin.variation.show', ['variation' => $this->variation->id]);
     }
 
     public function render()

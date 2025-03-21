@@ -72,7 +72,7 @@
             @if ($brands and $brands->hasPages())
             <span>Página {{ $brands->currentPage() }}</span>
 
-            <div>{{ $brands->links() }}</div>
+            <div>{{ $brands->links('vendor.pagination.tailwind') }}</div>
             @endif
         </div>
     </div>

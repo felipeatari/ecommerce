@@ -8,16 +8,19 @@ use Illuminate\Support\Facades\Log;
 
 class VariationRepository
 {
-    public function filters($query, array $filters, array $alloweds = [])
+    private array $alloweds = ['id', 'type', 'value', 'active'];
+
+    public function filters($query, array $filters)
     {
         foreach ($filters as $key => $value):
-            if (!in_array($key, $alloweds)) continue;
+            if (!in_array($key, $this->alloweds)) continue;
 
             if (is_array($value)) {
                 $query->whereIn($key, $value);
             } else {
                 match ($key) {
-                    'name' => $query->where('name', 'like', "%$value%"),
+                    'type' => $query->where('type', $value),
+                    'value' => $query->where('value', 'like', "%$value%"),
                     default => $query->where($key, $value),
                 };
             }
@@ -26,20 +29,24 @@ class VariationRepository
         return $query;
     }
 
-    public function getAll(array $filters = [], int $perPage = 10, $columns = ['*'])
+    public function getAll(array $filters = [], int $perPage = 10, $columns = [])
     {
         try {
-            $alloweds = ['name'];
+            $query = Variation::query()->orderByDesc('id');
+            $query = $this->filters($query, $filters, $this->alloweds);
 
-            $query = Variation::query();
-            $query = $this->filters($query, $filters, $alloweds);
+            if (! $columns) $columns = ['*'];
 
-            $data = $query->paginate($perPage, $columns);
+            $data = $query->paginate($perPage, $columns, 'pagina');
 
             if (! $data->count()) throw new \Exception('Not found', 404);
 
             return $data;
-        } catch (\Exception $exception) {
+        } catch (ModelNotFoundException $exception) {
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        } catch (Exception $exception) {
             Log::error($exception->getMessage());
 
             throw $exception;
@@ -113,8 +120,6 @@ class VariationRepository
             $variation = $this->getOne($id);
 
             $variation->delete();
-
-            $user->fill(['deleted_by' => userId()])->save();
 
             DB::commit();
 

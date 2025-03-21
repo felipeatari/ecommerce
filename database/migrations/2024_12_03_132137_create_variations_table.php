@@ -3,6 +3,7 @@
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -35,7 +36,7 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->constrained();
             $table->timestamps();
-            $table->softDeletes();
+            $table->softDeletes('removed_at');
         });
 
         DB::statement('ALTER TABLE variations AUTO_INCREMENT = 1000;');

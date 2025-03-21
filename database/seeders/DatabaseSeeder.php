@@ -59,41 +59,39 @@ class DatabaseSeeder extends Seeder
 
         // Product::factory(3)->create();
 
-        // for ($i = 0; $i <= 7; $i++):
-        //     $typeVariation = 'color';
+        $typeVariation = 'color';
+        $valueVariations = ['Azul', 'Vermelho', 'Preto', 'Branco', 'Laranja', 'Cinza', 'Verde', 'Amarelo'];
+        $codeVariations = ['#0000FF', '#FF0000', '#000000', '#FFFFFF', '#FFA500', '#646464', '#00FF00', '#FFFF00'];
 
-        //     $valueVariations = ['Azul', 'Vermelho', 'Preto', 'Branco', 'Laranja', 'Cinza', 'Verde', 'Amarelo'];
-        //     $codeVariations = ['#0000FF', '#FF0000', '#000000', '#FFFFFF', '#FFA500', '#646464', '#00FF00', '#FFFF00'];
+        for ($i = 0; $i <= 7; $i++):
+            $valueVariation = $valueVariations[$i];
+            $codeVariation = $codeVariations[$i];
 
-        //     $valueVariation = $valueVariations[$i];
-        //     $codeVariation = $codeVariations[$i];
+            if (! Variation::where('type', $typeVariation)->where('value', $valueVariation)->exists()) {
+                Variation::factory()->create([
+                    'type' => $typeVariation,
+                    'value' => $valueVariation,
+                    'code' => $codeVariation,
+                ]);
+            }
+        endfor;
 
-        //     if (! Variation::where('type', $typeVariation)->where('value', $valueVariation)->exists()) {
-        //         Variation::factory()->create([
-        //             'type' => $typeVariation,
-        //             'value' => $valueVariation,
-        //             'code' => $codeVariation,
-        //         ]);
-        //     }
-        // endfor;
+        $typeVariation = 'size';
+        $sizeVariations = ['PP', 'P', 'M', 'G', 'GG'];
+        $codeVariations = ['1', '2', '3', '4', '5'];
 
-        // for ($i = 0; $i <= 4; $i++):
-        //     $typeVariation = 'size';
+        for ($i = 0; $i <= 4; $i++):
+            $valueVariation = $sizeVariations[$i];
+            $codeVariation = $codeVariations[$i];
 
-        //     $sizeVariations = ['PP', 'P', 'M', 'G', 'GG'];
-        //     $codeVariations = ['1', '2', '3', '4', '5'];
-
-        //     $valueVariation = $sizeVariations[$i];
-        //     $codeVariation = $codeVariations[$i];
-
-        //     if (! Variation::where('type', $typeVariation)->where('value', $valueVariation)->exists()) {
-        //         Variation::factory()->create([
-        //             'type' => $typeVariation,
-        //             'value' => $valueVariation,
-        //             'code' => $codeVariation,
-        //         ]);
-        //     }
-        // endfor;
+            if (! Variation::where('type', $typeVariation)->where('value', $valueVariation)->exists()) {
+                Variation::factory()->create([
+                    'type' => $typeVariation,
+                    'value' => $valueVariation,
+                    'code' => $codeVariation,
+                ]);
+            }
+        endfor;
 
         // Product::all()->each(function(Product $product) {
         //     $skusCount = random_int(0, 4);

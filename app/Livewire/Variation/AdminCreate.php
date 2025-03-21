@@ -3,6 +3,8 @@
 namespace App\Livewire\Variation;
 
 use App\Models\Variation;
+use App\Repositories\VariationRepository;
+use App\Services\VariationService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -33,24 +35,18 @@ class AdminCreate extends Component
     {
         $this->validate();
 
-        DB::beginTransaction();
+        $data = (new VariationService(new VariationRepository))->create([
+            'type' => $this->type,
+            'value' => $this->value,
+            'code' => $this->code,
+            'extra' => $this->extra,
+        ]);
 
-        try {
-            Variation::create([
-                'type' => $this->type,
-                'value' => $this->value,
-                'code' => $this->code,
-                'extra' => $this->extra,
-            ]);
-
-            DB::commit();
-
-            return $this->js('alert("Variação criada com sucesso.")');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        return redirect()->route('admin.variation.index');
     }
 
     public function render()

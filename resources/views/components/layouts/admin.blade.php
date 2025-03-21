@@ -69,7 +69,7 @@
 
         <div class="w-full h-screen flex flex-col bg-gray-100 overflow-auto pb-10"><!-- Coluna direita -->
             <div class="flex items-center justify-between bg-white m-3 p-3 shadow-sm">
-                <span class="text-gray-900 font-semibold">Dashboard</span>
+                <span class="text-gray-900 font-semibold">Área Administrativa</span>
                 <div class="flex items-center">
                     <a wire:navigate class="mr-2" href="/logout">
                         <x-icons.logout />

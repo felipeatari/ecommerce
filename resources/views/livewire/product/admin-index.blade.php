@@ -19,19 +19,19 @@
                         <th class="border py-2 w-[100px]">Ações</th>
                     </tr>
 
-                        <tr>
-                            <td class="border p-1 w-[100px]">
-                                <input type="number" min="1000" wire:model="searchByID" class="w-full px-2 py-1 border rounded-md">
-                            </td>
-                            <td class="border p-1">
-                                <input type="text" wire:model="searchByName" class="w-full px-2 py-1 border rounded-md">
-                            </td>
-                            <td class="border p-1 w-[100px]">
-                                <button wire:click="search">
-                                    <x-icons.search />
-                                </button>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td class="border p-1 w-[100px]">
+                            <input type="number" min="1000" wire:model="searchByID" class="w-full px-2 py-1 border rounded-md">
+                        </td>
+                        <td class="border p-1">
+                            <input type="text" wire:model="searchByName" class="w-full px-2 py-1 border rounded-md">
+                        </td>
+                        <td class="border p-1 w-[100px]">
+                            <button wire:click="search">
+                                <x-icons.search />
+                            </button>
+                        </td>
+                    </tr>
                 </thead>
                 <tbody>
                     @forelse ($products as $product)
@@ -72,7 +72,7 @@
             @if ($products and $products->hasPages())
             <span>Página {{ $products->currentPage() }}</span>
 
-            <div>{{ $products->links() }}</div>
+            <div>{{ $products->links('vendor.pagination.tailwind') }}</div>
             @endif
         </div>
     </div>

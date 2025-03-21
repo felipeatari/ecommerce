@@ -19,15 +19,16 @@ class VariationService
         try {
             $data = $this->variationRepository->getAll($filters, $perPage, $columns);
 
-            $items = $data->getCollection()->map(fn (Product $product) => ProductDTO::fromModel($product));
+            if (! $columns) {
+                $items = $data->getCollection()->map(fn (Variation $variation) => VariationDTO::fromModel($variation));
+
+                $data->setCollection($items);
+            }
 
             return [
-                'current_page' => $data->currentPage(),
-                'last_page' => $data->lastPage(),
-                'total' => $data->total(),
-                'per_page' => $data->perPage(),
-                'links' => $data->appends(request()->query())->links(),
-                'data' => $items
+                'status' => 'success',
+                'code' => 201,
+                'data' => $data,
             ];
         } catch (\Exception $exception) {
             return [
@@ -42,7 +43,7 @@ class VariationService
     {
         try {
             $data = $this->variationRepository->getOne($id);
-            $item = ProductDTO::fromModel($data);
+            $item = VariationDTO::fromModel($data);
 
             return [
                 'status' => 'success',
@@ -68,7 +69,7 @@ class VariationService
     {
         try {
             $data = $this->variationRepository->create($data);
-            $item = ProductDTO::fromModel($data);
+            $item = VariationDTO::fromModel($data);
 
             return [
                 'status' => 'success',
@@ -89,7 +90,7 @@ class VariationService
     {
         try {
             $data = $this->variationRepository->update($id, $data);
-            $item = ProductDTO::fromModel($data);
+            $item = VariationDTO::fromModel($data);
 
             return [
                 'status' => 'success',

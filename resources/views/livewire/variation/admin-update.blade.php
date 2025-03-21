@@ -2,21 +2,19 @@
     <form wire:submit.prevent="update" class="bg-white w-full px-10 py-5 shadow">
         <div class="w-full flex justify-between my-5">
             <a
-            wire:navigate
-            class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
-            href="/admin/variacao/ver/{{ $variation->id }}"
+                href="{{ route('admin.variation.show', $variation->id) }}"
+                class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
             >
                 <x-icons.back />
             </a>
 
-            <div>
-                <button
+            <button
+                type="button"
                 wire:click="update"
                 class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1"
-                >
-                    Salvar
-                </button>
-            </div>
+            >
+                Salvar
+            </button>
         </div>
 
         <h1 class="font-bold my-10">Editar Variação {{ $variation->id }}</h1>

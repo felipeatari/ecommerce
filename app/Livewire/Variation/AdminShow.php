@@ -3,6 +3,8 @@
 namespace App\Livewire\Variation;
 
 use App\Models\Variation;
+use App\Repositories\VariationRepository;
+use App\Services\VariationService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -19,19 +21,13 @@ class AdminShow extends Component
 
     public function destroy()
     {
-        DB::beginTransaction();
+        $data = (new VariationService(new VariationRepository))->remove($this->variation->id);
 
-        try {
-            $this->variation->delete();
-
-            DB::commit();
-
-            return redirect(route('admin.variation.index'));
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        return redirect()->route('admin.variation.index');
     }
 
     public function render()

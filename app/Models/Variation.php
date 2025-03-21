@@ -10,6 +10,8 @@ class Variation extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const DELETED_AT = 'removed_at';
+
     protected $fillable = [
         'type',
         'value',
@@ -18,10 +20,21 @@ class Variation extends Model
         'active',
         'created_by',
         'updated_by',
-        'deleted_by',
+        'removed_by',
     ];
 
     protected $dates = [
-        'deleted_at',
+        'removed_at',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($product) {
+            $product->active = false;
+            $product->removed_by = auth()?->id();
+            $product->save();
+        });
+    }
 }
