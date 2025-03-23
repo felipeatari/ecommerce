@@ -30,7 +30,7 @@ class BrandService
 
             return [
                 'status' => 'success',
-                'code' => 201,
+                'code' => 200,
                 'data' => $data,
             ];
         } catch (ModelNotFoundException $exception) {

@@ -3,40 +3,79 @@
 namespace App\Livewire\Sku;
 
 use App\Models\Sku;
+use App\Repositories\SkuRepository;
+use App\Services\SkuService;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 
 class AdminIndex extends Component
 {
-    use WithPagination, WithoutUrlPagination;
+    use WithPagination;
+
+    public ?int $searchByID = null;
+    public ?string $searchByProduct= null;
+    public ?string $searchByVariation1 = null;
+    public ?string $searchByVariation2 = null;
+    public array $filters = [];
+    public array $columns = [];
+    public bool $filter = false;
+
+    public $selectedPerPage = 5;
+
+    public function updating($property)
+    {
+        if (in_array($property, [
+            'searchByID', 'searchByProduct', 'searchByVariation1', 'searchByVariation2'])) {
+            $this->resetPage();
+        }
+    }
 
     #[Computed()]
     public function skus()
     {
-        return Sku::with(['product' => function($query){
-                $query->select('id', 'name');
-            }])
-            ->with(['variation1' => function($query){
-                $query->select('id', 'value');
-            }])
-            ->with(['variation2' => function($query){
-                $query->select('id', 'value');
-            }])
-            ->select(['id', 'product_id', 'variation_id_1', 'variation_id_2' , 'price'])
-            ->orderByDesc('id')
-            ->paginate(5);
+        if ($this->filter and $this->searchByID) {
+            $this->filters['id'] = $this->searchByID;
+        } else {
+            unset($this->filters['id']);
+        }
+
+        if ($this->filter and $this->searchByProduct) {
+            $this->filters['product'] = $this->searchByProduct;
+        } else {
+            unset($this->filters['product']);
+        }
+
+        if ($this->filter and $this->searchByVariation1) {
+            $this->filters['variation_1'] = $this->searchByVariation1;
+        } else {
+            unset($this->filters['variation_1']);
+        }
+
+        if ($this->filter and $this->searchByVariation2) {
+            $this->filters['variation_2'] = $this->searchByVariation2;
+        } else {
+            unset($this->filters['variation_2']);
+        }
+
+        $data = (new SkuService(new SkuRepository))->getAll(
+            $this->filters,
+            $this->selectedPerPage,
+            $this->columns
+        );
+
+        if ($data['status'] === 'error') return [];
+
+        return $data['data'];
+    }
+
+    public function search()
+    {
+        $this->filter = true;
     }
 
     public function render()
     {
-        $this->skus->each(function(Sku $sku) {
-            $sku->variation = $sku->variation1->value;
-            $sku->variation .= ' - ';
-            $sku->variation .= $sku->variation2->value;
-        });
-
         return view('livewire.sku.admin-index', [
             'skus' => $this->skus,
         ])->layout('components.layouts.admin');

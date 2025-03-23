@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTO\SkuDTO;
 use App\Models\Sku;
 use App\Repositories\SkuRepository;
+use Exception;
 
 class SkuService
 {
@@ -16,20 +17,27 @@ class SkuService
 
     public function getAll(array $filters = [], int $perPage = 10, array $columns = ['*'])
     {
-        $data = $this->skuRepository->getAll($filters, $perPage, $columns);
+        try {
+            $data = $this->skuRepository->getAll($filters, $perPage, $columns);
 
-        $items = $data->getCollection()->map(function(Sku $sku) {
-            return SkuDTO::fromModel($sku);
-        });
+            if (! $columns) {
+                $items = $data->getCollection()->map(fn (Sku $sku) => SkuDTO::fromModel($sku));
 
-        return [
-            'current_page' => $data->currentPage(),
-            'last_page' => $data->lastPage(),
-            'total' => $data->total(),
-            'per_page' => $data->perPage(),
-            'links' => $data->appends(request()->query())->links(),
-            'data' => $items
-        ];
+                $data->setCollection($items);
+            }
+
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'data' => $data,
+            ];
+        } catch (Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function getOne(?int $id = null)

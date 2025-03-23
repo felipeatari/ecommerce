@@ -93,26 +93,26 @@ class DatabaseSeeder extends Seeder
             }
         endfor;
 
-        // Product::all()->each(function(Product $product) {
-        //     $skusCount = random_int(0, 4);
+        Product::all()->each(function(Product $product) {
+            $skusCount = random_int(0, 4);
 
-        //     for ($i = 0; $i <= $skusCount; $i++):
-        //         $variation_id_1 = Variation::query()
-        //             ->inRandomOrder()
-        //             ->where('type', 'color')
-        //             ->first();
+            for ($i = 0; $i <= $skusCount; $i++):
+                $variation_id_1 = Variation::query()
+                    ->inRandomOrder()
+                    ->where('type', 'color')
+                    ->first();
 
-        //         $variation_id_2 = Variation::query()
-        //             ->inRandomOrder()
-        //             ->where('type', 'size')
-        //             ->first();
+                $variation_id_2 = Variation::query()
+                    ->inRandomOrder()
+                    ->where('type', 'size')
+                    ->first();
 
-        //         Sku::factory()->create([
-        //             'product_id' => $product->id,
-        //             'variation_id_1' => $variation_id_1,
-        //             'variation_id_2' => $variation_id_2,
-        //         ]);
-        //     endfor;
-        // });
+                Sku::factory()->create([
+                    'product_id' => $product->id,
+                    'variation_id_1' => $variation_id_1,
+                    'variation_id_2' => $variation_id_2,
+                ]);
+            endfor;
+        });
     }
 }

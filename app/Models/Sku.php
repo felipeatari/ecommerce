@@ -10,6 +10,8 @@ class Sku extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const DELETED_AT = 'removed_at';
+
     protected $fillable = [
         'product_id',
         'variation_id_1',
@@ -26,11 +28,11 @@ class Sku extends Model
         'active',
         'created_by',
         'updated_by',
-        'deleted_by',
+        'removed_by',
     ];
 
     protected $dates = [
-        'deleted_at',
+        'removed_at',
     ];
 
     public function product()

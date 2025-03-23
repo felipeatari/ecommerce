@@ -10,7 +10,7 @@
             </a>
         </div>
 
-        <div class="w-full min-h-[325px]">
+        <div class="w-full min-h-[335px]">
             <table class="w-full table-auto text-center">
                 <thead class="border-b-2">
                     <tr>
@@ -18,20 +18,19 @@
                         <th class="border py-2">Nome</th>
                         <th class="border py-2 w-[100px]">Ações</th>
                     </tr>
-
-                        <tr>
-                            <td class="border p-1 w-[100px]">
-                                <input type="number" min="1000" wire:model="searchByID" class="w-full px-2 py-1 border rounded-md">
-                            </td>
-                            <td class="border p-1">
-                                <input type="text" wire:model="searchByName" class="w-full px-2 py-1 border rounded-md">
-                            </td>
-                            <td class="border p-1 w-[100px]">
-                                <button wire:click="search">
-                                    <x-icons.search />
-                                </button>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td class="border p-1 w-[100px]">
+                            <input type="number" min="1000" wire:model="searchByID" class="w-full px-2 py-1 border rounded-md">
+                        </td>
+                        <td class="border p-1">
+                            <input type="text" wire:model="searchByName" class="w-full px-2 py-1 border rounded-md">
+                        </td>
+                        <td class="border p-1 w-[100px]">
+                            <button wire:click="search">
+                                <x-icons.search />
+                            </button>
+                        </td>
+                    </tr>
                 </thead>
                 <tbody>
                     @forelse ($categories as $category)

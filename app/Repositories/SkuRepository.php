@@ -3,43 +3,52 @@
 namespace App\Repositories;
 
 use App\Models\Sku;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SkuRepository
 {
-    public function filters($query, array $filters, array $alloweds = [])
+    private array $alloweds = ['id', 'product', 'variation_1', 'variation_2'];
+
+    public function filters($query, array $filters)
     {
         foreach ($filters as $key => $value):
-            if (!in_array($key, $alloweds)) continue;
+            if (!in_array($key, $this->alloweds)) continue;
 
             if (is_array($value)) {
                 $query->whereIn($key, $value);
-            } else {
-                match ($key) {
-                    'name' => $query->where('name', 'like', "%$value%"),
-                    default => $query->where($key, $value),
-                };
+
+                continue;
             }
+
+            match ($key) {
+                'id' => $query->where('id', $value),
+                'product' => $query->whereHas('product', fn ($product) => $product->where('name', 'like', "%$value%")),
+                'variation_1' => $query->whereHas('variation1', fn ($variation) => $variation->where('value', 'like', "%$value%")),
+                'variation_2' => $query->whereHas('variation2', fn ($variation) => $variation->where('value', 'like', "%$value%")),
+                default => $query->where($key, $value),
+            };
         endforeach;
 
         return $query;
     }
 
-    public function getAll(array $filters = [], int $perPage = 10, $columns = ['*'])
+    public function getAll(array $filters = [], int $perPage = 10, $columns = [])
     {
         try {
-            $alloweds = ['name'];
-
             $query = Sku::query();
-            $query = $this->filters($query, $filters, $alloweds);
+            $query = $this->filters($query, $filters);
+
+            if (! $columns) $columns = ['*'];
 
             $data = $query->paginate($perPage, $columns);
 
-            if (! $data->count()) throw new \Exception('Not found', 404);
+            if (! $data->count()) throw new Exception('Not found', 404);
 
             return $data;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error($exception->getMessage());
 
             throw $exception;
@@ -50,10 +59,10 @@ class SkuRepository
     {
         try {
             return Sku::findOrFail($id);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
 
             throw $exception;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error($exception->getMessage());
 
             throw $exception;
@@ -70,7 +79,7 @@ class SkuRepository
             DB::commit();
 
             return $sku;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
@@ -91,13 +100,13 @@ class SkuRepository
             DB::commit();
 
             return $sku;
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
 
             throw $exception;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
@@ -118,13 +127,13 @@ class SkuRepository
             DB::commit();
 
             return $sku;
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
 
             throw $exception;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
@@ -144,13 +153,13 @@ class SkuRepository
             DB::commit();
 
             return $sku;
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());
 
             throw $exception;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             DB::rollBack();
 
             Log::error($exception->getMessage());

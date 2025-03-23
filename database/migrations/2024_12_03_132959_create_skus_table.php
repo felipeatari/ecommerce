@@ -54,7 +54,7 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->constrained();
             $table->timestamps();
-            $table->softDeletes();
+            $table->softDeletes('removed_at');
         });
 
         DB::statement('ALTER TABLE skus AUTO_INCREMENT = 1000;');

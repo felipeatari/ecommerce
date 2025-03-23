@@ -10,7 +10,7 @@
             </a>
         </div>
 
-        <div class="w-full min-h-[325px]">
+        <div class="w-full min-h-[335px]">
             <table class="w-full table-auto text-center">
                 <thead class="border-b-2">
                     <tr>

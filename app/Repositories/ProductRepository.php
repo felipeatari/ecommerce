@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class ProductRepository
 {
-    private array $alloweds = ['id', 'name'];
+    private array $alloweds = ['id', 'name', 'active'];
 
     public function filters($query, array $filters)
     {

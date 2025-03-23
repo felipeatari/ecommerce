@@ -2,7 +2,9 @@
 
 namespace App\DTO;
 
+use App\Models\Product;
 use App\Models\Sku;
+use App\Models\Variation;
 
 class SkuDTO
 {
@@ -20,6 +22,10 @@ class SkuDTO
     public ?float $length;
     public ?string $cover;
     public ?bool $active;
+    private ?Product $product;
+    private ?Variation $variation1;
+    private ?Variation $variation2;
+    public ?string $variation;
 
     public function __construct(Sku $sku)
     {
@@ -37,6 +43,42 @@ class SkuDTO
         $this->length = $sku['length'];
         $this->cover = $sku['cover'];
         $this->active = $sku['active'];
+        $this->product = $sku['product'];
+        $this->variation1 = $sku['variation1'];
+        $this->variation2 = $sku['variation2'];
+
+        $this->setVariation($sku['variation1'], $sku['variation2']);
+    }
+
+    public function setVariation(?Variation $variation1, ?Variation $variation2)
+    {
+        if (! $variation1 or ! $variation2) return ' - ';
+
+        $this->variation = $variation1->value;
+        $this->variation .= ' - ';
+        $this->variation .= $variation2->value;
+
+        return $this->variation;
+    }
+
+    public function getVariation()
+    {
+        return $this->variation;
+    }
+
+    public function getVariation1()
+    {
+        return $this->variation1;
+    }
+
+    public function getVariation2()
+    {
+        return $this->variation2;
+    }
+
+    public function getProduct()
+    {
+        return $this->product;
     }
 
     public function toArray(): array
