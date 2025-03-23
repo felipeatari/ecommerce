@@ -6,6 +6,8 @@ use App\Models\Product;
 use App\Models\Sku;
 use App\Models\ProductImage;
 use App\Models\Variation;
+use App\Repositories\SkuRepository;
+use App\Services\SkuService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -92,31 +94,30 @@ class AdminUpdate extends Component
     {
         $this->validate();
 
-        DB::beginTransaction();
+        $data = (new SkuService(new SkuRepository))->update($this->sku->id, [
+            'product_id' => $this->productId,
+            'price' => $this->price  * 100,
+            'cost_price' => $this->costPrice * 100,
+            'discount_price' => $this->discountPrice * 100,
+            'variation_id_1' => $this->variationId1,
+            'variation_id_2' => $this->variationId2,
+            'stock' => $this->stock,
+            'active' => $this->active,
+            'width' => $this->width,
+            'height' => $this->height,
+            'length' => $this->length,
+            'weight' => $this->weight,
+        ]);
 
-        try {
-            $this->sku->product_id = $this->productId;
-            $this->sku->price = $this->price * 100;
-            $this->sku->cost_price = $this->costPrice * 100;
-            $this->sku->discount_price = $this->discountPrice * 100;
-            $this->sku->variation_id_1 = $this->variationId1;
-            $this->sku->variation_id_2 = $this->variationId2;
-            $this->sku->stock = $this->stock;
-            $this->sku->active = $this->active;
-            $this->sku->width = $this->width;
-            $this->sku->height = $this->height;
-            $this->sku->length = $this->length;
-            $this->sku->weight = $this->weight;
-            $this->sku->save();
-
-            DB::commit();
-
-            return $this->js('alert("Produto editado com sucesso.")');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        $sku_id = $data['data']->id;
+
+        $this->sku = Sku::find($sku_id);
+
+        $this->js('alert("Sku editado com sucesso.")');
     }
 
     private function storageImgSku(int $skuId)
@@ -220,8 +221,8 @@ class AdminUpdate extends Component
     {
         $this->productId = $this->sku->product_id;
         $this->price = $this->sku->price / 100;
-        $this->cost_price = $this->sku->cost_price / 100;
-        $this->discount_price = $this->sku->discount_price / 100;
+        $this->costPrice = $this->sku->cost_price / 100;
+        $this->discountPrice = $this->sku->discount_price / 100;
         $this->variationId1 = $this->sku->variation_id_1;
         $this->variationId2 = $this->sku->variation_id_2;
         $this->stock = $this->sku->stock;

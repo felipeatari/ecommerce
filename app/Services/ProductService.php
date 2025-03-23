@@ -88,7 +88,7 @@ class ProductService
         }
     }
 
-    public function update($id, array $data)
+    public function update(?int $id = null, array $data)
     {
         try {
             $data = $this->productRepository->update($id, $data);
@@ -97,7 +97,7 @@ class ProductService
             return [
                 'status' => 'success',
                 'code' => 200,
-                'message' => 'Produto criado com sucesso.',
+                'message' => 'Produto editado com sucesso.',
                 'data' => $item
             ];
         } catch (ModelNotFoundException $exception) {

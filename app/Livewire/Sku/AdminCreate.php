@@ -2,10 +2,13 @@
 
 namespace App\Livewire\Sku;
 
+use App\DTO\SkuDTO;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Sku;
 use App\Models\Variation;
+use App\Repositories\SkuRepository;
+use App\Services\SkuService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
@@ -96,39 +99,35 @@ class AdminCreate extends Component
     {
         $this->validate();
 
-        DB::beginTransaction();
+        $data = (new SkuService(new SkuRepository))->create([
+            'product_id' => $this->productId,
+            'price' => $this->price  * 100,
+            'cost_price' => $this->costPrice  * 100,
+            'discount_price' => $this->discountPrice  * 100,
+            'variation_id_1' => $this->variationId1,
+            'variation_id_2' => $this->variationId2,
+            'stock' => $this->stock,
+            'active' => $this->active,
+            'width' => $this->width,
+            'height' => $this->height,
+            'length' => $this->length,
+            'weight' => $this->weight,
+            'image1' => $this->image1,
+            'image2' => $this->image2,
+            'image3' => $this->image3,
+            'image4' => $this->image4,
+            'image5' => $this->image5,
+        ]);
 
-        try {
-            $sku = Sku::create([
-                'product_id' => $this->productId,
-                'price' => $this->price  * 100,
-                'cost_price' => $this->costPrice  * 100,
-                'discount_price' => $this->discountPrice  * 100,
-                'variation_id_1' => $this->variationId1,
-                'variation_id_2' => $this->variationId2,
-                'stock' => $this->stock,
-                'active' => $this->active,
-                'width' => $this->width,
-                'height' => $this->height,
-                'length' => $this->length,
-                'weight' => $this->weight,
-                'image1' => $this->image1,
-                'image2' => $this->image2,
-                'image3' => $this->image3,
-                'image4' => $this->image4,
-                'image5' => $this->image5,
-            ]);
-
-            DB::commit();
-
-            $this->sku = $sku;
-
-            return $this->js('alert("Sku criado com sucesso.")');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        $sku_id = $data['data']->id;
+
+        $this->sku = Sku::find($sku_id);
+
+        $this->js('alert("Sku criado com sucesso.")');
     }
 
     private function storageImgSku(int $skuId)

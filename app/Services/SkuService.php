@@ -42,27 +42,125 @@ class SkuService
 
     public function getOne(?int $id = null)
     {
-        $sku = $this->skuRepository->getOne($id);
+        try {
+            $data = $this->skuRepository->getOne($id);
+            $item = SkuDTO::fromModel($sku);
 
-        return SkuDTO::fromModel($sku)->toArray();
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'data' => $item
+            ];
+        } catch (ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Sku não encontrado.',
+            ];
+        } catch (Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function create(array $data)
     {
-        $sku = $this->skuRepository->create($data);
+        try {
+            $data = $this->skuRepository->create($data);
+            $item = SkuDTO::fromModel($data);
 
-        return SkuDTO::fromModel($sku);
+            return [
+                'status' => 'success',
+                'code' => 201,
+                'message' => 'Sku criado com sucesso.',
+                'data' => $item
+            ];
+        } catch (Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
-    public function update($id, array $data)
+    public function update(?int $id = null, array $data)
     {
-        $sku = $this->skuRepository->update($id, $data);
+        try {
+            $data = $this->skuRepository->update($id, $data);
+            $item = SkuDTO::fromModel($data);
 
-        return SkuDTO::fromModel($sku);
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Sku editado com sucesso.',
+                'data' => $item
+            ];
+        } catch (ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Sku não encontrado.',
+            ];
+        } catch (Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
+    }
+
+    public function remove(?int $id = null)
+    {
+        try {
+            $this->skuRepository->remove($id);
+
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Sku removido com sucesso.',
+            ];
+        } catch (ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Sku não encontrado.',
+            ];
+        } catch (Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public function delete($id)
     {
-        $this->skuRepository->delete($id);
+        try {
+            $this->skuRepository->delete($id);
+
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Sku apagado com sucesso.',
+            ];
+        } catch (ModelNotFoundException $exception) {
+            return [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Sku não encontrado.',
+            ];
+        } catch (Exception $exception) {
+            return [
+                'status' => 'error',
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 }

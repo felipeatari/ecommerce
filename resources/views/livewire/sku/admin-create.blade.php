@@ -2,13 +2,19 @@
     <form wire:submit.prevent="store" class="bg-white w-full px-10 py-5 shadow">
         <div class="w-full flex justify-between my-5">
             <a
-            wire:navigate
-            class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
-            href="/admin/sku/listar"
+                href="{{ route('admin.sku.index') }}"
+                class="w-8 h-8 flex items-center justify-center bg-gray-900 hover:bg-gray-700 rounded-full"
             >
                 <x-icons.back />
             </a>
-            <button type="button" class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1" wire:click="store">Salvar</button>
+
+            <button
+                type="button"
+                wire:click="store"
+                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1 rounded-md"
+            >
+                Salvar
+            </button>
         </div>
 
         <h1 class="font-bold my-10">Cadastrar um Sku</h1>
@@ -28,9 +34,9 @@
                     <option>Selecionar</option>
                     @foreach ($products as $product)
                     <option
-                    value="{{ $product->id }}"
-                    wire:key="{{ $product->id }}"
-                    wire:model="{{ $product->id }}"
+                        value="{{ $product->id }}"
+                        wire:key="{{ $product->id }}"
+                        wire:model="{{ $product->id }}"
                     >
                         {{ $product->name }}
                     </option>
@@ -65,9 +71,9 @@
                     <option>Selecionar</option>
                     @foreach ($colors as $color)
                     <option
-                    value="{{ $color->id }}"
-                    {{-- wire:key="{{ $color->id }}" --}}
-                    wire:model="{{ $color->id }}"
+                        value="{{ $color->id }}"
+                        wire:key="{{ $color->id }}"
+                        wire:model="{{ $color->id }}"
                     >
                         {{ $color->value }}
                     </option>
@@ -81,9 +87,9 @@
                     <option>Selecionar</option>
                     @foreach ($sizes as $size)
                     <option
-                    value="{{ $size->id }}"
-                    {{-- wire:key="{{ $size->id }}" --}}
-                    wire:model="{{ $size->id }}"
+                        value="{{ $size->id }}"
+                        wire:key="{{ $size->id }}"
+                        wire:model="{{ $size->id }}"
                     >
                         {{ $size->value }}
                     </option>

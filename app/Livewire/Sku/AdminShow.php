@@ -5,15 +5,15 @@ namespace App\Livewire\Sku;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Sku;
+use App\Repositories\SkuRepository;
+use App\Services\SkuService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class AdminShow extends Component
 {
-    // public Product $product;
     public Sku $sku;
-    // public ?ProductImage $productImage;
 
     public ?int $variationId = null;
     public ?string $image1Preview = null;
@@ -40,20 +40,15 @@ class AdminShow extends Component
 
     public function destroy()
     {
-        DB::beginTransaction();
+        $data = (new SkuService(new SkuRepository))->remove($this->sku->id);
 
-        try {
-            $this->sku->delete();
-
-            DB::commit();
-
-            return redirect(route('admin.sku.index'));
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            $this->addError('db', $e->getMessage());
+        if ($data['status'] === 'error') {
+            return $this->addError('db', $data['message']);
         }
+
+        return redirect()->route('admin.sku.index');
     }
+
 
     public function render()
     {

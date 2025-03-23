@@ -38,7 +38,7 @@ class SkuRepository
     public function getAll(array $filters = [], int $perPage = 10, $columns = [])
     {
         try {
-            $query = Sku::query();
+            $query = Sku::query()->orderByDesc('id');
             $query = $this->filters($query, $filters);
 
             if (! $columns) $columns = ['*'];
