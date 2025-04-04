@@ -5,7 +5,9 @@ namespace App\Livewire\Sku;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Sku;
+use App\Repositories\ProductImageRepository;
 use App\Repositories\SkuRepository;
+use App\Services\ProductImageService;
 use App\Services\SkuService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
@@ -27,10 +29,16 @@ class AdminShow extends Component
     #[Computed()]
     public function productImage()
     {
-        return ProductImage::query()
-                    ->where('product_id', $this->sku->product_id)
-                    ->where('variation_id', $this->sku->variation_id_1)
-                    ->first();
+        $data = (new ProductImageService(new ProductImageRepository))->getFirst([
+            'product_id' => $this->sku->product_id,
+            'variation_id' => $this->sku->variation_id_1,
+        ]);
+
+        if ($data['status'] === 'error') {
+            return [];
+        }
+
+        return $data['data'];
     }
 
     public function modalDelete()

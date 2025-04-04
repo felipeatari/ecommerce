@@ -29,9 +29,10 @@ return new class extends Migration
             $table->string('image_4')->nullable();
             $table->string('image_5')->nullable();
             $table->timestamps();
+            $table->softDeletes('removed_at');
         });
 
-        DB::statement('ALTER TABLE skus AUTO_INCREMENT = 1000;');
+        DB::statement('ALTER TABLE product_images AUTO_INCREMENT = 1000;');
     }
 
     /**

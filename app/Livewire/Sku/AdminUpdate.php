@@ -6,7 +6,9 @@ use App\Models\Product;
 use App\Models\Sku;
 use App\Models\ProductImage;
 use App\Models\Variation;
+use App\Repositories\ProductImageRepository;
 use App\Repositories\SkuRepository;
+use App\Services\ProductImageService;
 use App\Services\SkuService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
@@ -232,10 +234,14 @@ class AdminUpdate extends Component
         $this->length = $this->sku->length;
         $this->weight = $this->sku->weight;
 
-        $this->productImage = ProductImage::query()
-                                ->where('product_id', $this->sku->product_id)
-                                ->where('variation_id', $this->variationId1)
-                                ->first();
+        $data = (new ProductImageService(new ProductImageRepository))->getFirst([
+            'product_id' => $this->sku->product_id,
+            'variation_id' => $this->sku->variation_id_1,
+        ]);
+
+        if ($data['status'] === 'success') {
+            $this->productImage = $data['data'];
+        }
 
         if ($this->productImage) {
             $this->image1Preview = $this->productImage->image_1;
