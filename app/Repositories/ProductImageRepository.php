@@ -80,7 +80,7 @@ class ProductImageRepository
 
             $data = $query->first();
 
-            if (! $data->count()) throw new Exception('Not found', 404);
+            if (!$data) throw new Exception('Not found', 404);
 
             return $data;
         } catch (ModelNotFoundException $exception) {

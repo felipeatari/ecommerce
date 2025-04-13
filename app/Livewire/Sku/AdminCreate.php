@@ -208,15 +208,6 @@ class AdminCreate extends Component
                 $this->productImage->image_5 = $image5 ?? $this->image5Preview;
                 $this->productImage->save();
             } else {
-                // ProductImage::create([
-                //     'product_id' => $this->sku->product_id,
-                //     'variation_id' => $this->variationId1,
-                //     'image_1' => $image1 ?? $this->image1Preview,
-                //     'image_2' => $image2 ?? $this->image2Preview,
-                //     'image_3' => $image3 ?? $this->image3Preview,
-                //     'image_4' => $image4 ?? $this->image4Preview,
-                //     'image_5' => $image5 ?? $this->image5Preview,
-                // ]);
                 $data = (new ProductImageService(new ProductImageRepository))->create([
                     'product_id' => $this->sku->product_id,
                     'variation_id' => $this->variationId1,
@@ -241,20 +232,14 @@ class AdminCreate extends Component
     public function render()
     {
         if ($this->sku) {
-            // $this->productImage = ProductImage::query()
-            //                         ->where('product_id', $this->sku->product_id)
-            //                         ->where('variation_id', $this->variationId1)
-            //                         ->first();
-            $this->productImage = (new ProductImageService(new ProductImageRepository))->getFirst([
+            $data = (new ProductImageService(new ProductImageRepository))->getFirst([
                 'product_id' => $this->sku->product_id,
                 'variation_id' => $this->sku->variation_id_1,
             ]);
 
-            if ($data['status'] === 'error') {
-                $this->productImage = [];
+            if ($data['status'] === 'success') {
+                $this->productImage = $data['data'];
             }
-
-            $this->productImage = [];
 
             if ($this->productImage) {
                 $this->image1Preview = $this->productImage->image_1;
