@@ -75,14 +75,12 @@ class Show extends Component
             }
         endforeach;
 
-        // dump($sku);
-
-        // if (in_array($this->selectedSize, $this->selectedSizes[$sku['sku_id']])) {
+        if (in_array($this->selectedSize, $this->selectedSizes[$sku['sku_id']])) {
             $this->selectedSize = $sku['size'];
             $this->productPrice = $sku['price'];
             $this->stock = $sku['stock'];
             $this->selectedColorId = $sku['colorId'];
-        // }
+        }
 
         $this->addProductCart['id'] = $this->product->id;
         $this->addProductCart['sku_id'] = $sku['sku_id'];

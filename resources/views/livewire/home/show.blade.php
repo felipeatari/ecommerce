@@ -88,7 +88,7 @@
                         wire:key="{{ $i }}"
                         wire:click="selectColor({{ json_encode($variation) }})"
                         wire:navigate
-                        href="{{ route('home.show', [$slug]) }}?sku={{ $variation[0]['sku_id'] }}&cor={{ $variation[0]['color'] }}"
+                        href="{{ route('home.show', [$slug]) }}?sku={{ $variation[0]['sku_id'] }}&cor={{ $variation[0]['color'] }}&tam={{ $variation[0]['size'] }}"
                         @class([
                             'w-7 h-7 flex items-center justify-center border rounded-full text-xs text-gray-400 mr-2 cursor-pointer',
                             'border-2 border-gray-950' => $variation[0]['color'] === $selectedColor,
