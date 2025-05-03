@@ -18,7 +18,11 @@ class VerifyUserIsCustomer
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::user() and Auth::user()->level !== UserLevel::Costumer) {
-            return redirect('/');
+            if (Auth::user()->level === UserLevel::Admin) {
+                return redirect('/admin');
+            } else {
+                return redirect('/');
+            }
         }
 
         return $next($request);
