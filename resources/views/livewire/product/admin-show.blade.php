@@ -61,7 +61,7 @@
 
         <div class="my-5">
             <span class="px-2 py-1 font-semibold">Descrição: </span>
-            <div class="w-full h-[200px] px-2 py-1 mt-1 border">{{ $product->description }}</div>
+            <div class="w-full h-[200px] px-2 py-1 mt-1 border">{!! nl2br(e($product->description)) !!}</div>
         </div>
     </div>
 </div>

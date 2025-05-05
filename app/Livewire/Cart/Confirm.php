@@ -7,7 +7,6 @@ use App\Enums\PaymentType;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\OrderStatus;
-use App\Services\PaymentPagarmeService;
 use Illuminate\Support\Facades\Auth;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
@@ -61,8 +60,6 @@ class Confirm extends Component
 
         $cart = session()->get('cart');
 
-        // return (new PaymentPagarmeService)->cart($cart);
-
         $orderStatus = OrderStatusEnum::Pending->value;
 
         $order = Order::create([
@@ -95,20 +92,20 @@ class Confirm extends Component
             'status' => $orderStatus,
         ]);
 
-        // foreach ($cart['product'] as $product):
-        //     OrderProduct::create([
-        //         'order_id' => $order->id,
-        //         'product_id' => $product['id'],
-        //         'sku_id' => $product['sku_id'],
-        //         'name' => $product['name'],
-        //         'price_un' => $product['price'] * 100,
-        //         'price_total' => ($product['price'] * $product['quantity']) * 100,
-        //         'quantity' => $product['quantity'],
-        //         'color' => $product['color'],
-        //         'size' => $product['size'],
-        //         'image' => $product['image'],
-        //     ]);
-        // endforeach;
+        foreach ($cart['product'] as $product):
+            OrderProduct::create([
+                'order_id' => $order->id,
+                'product_id' => $product['id'],
+                'sku_id' => $product['sku_id'],
+                'name' => $product['name'],
+                'price_un' => $product['price'] * 100,
+                'price_total' => ($product['price'] * $product['quantity']) * 100,
+                'quantity' => $product['quantity'],
+                'color' => $product['color'],
+                'size' => $product['size'],
+                'image' => $product['image'],
+            ]);
+        endforeach;
 
         return $this->redirect(route('cart.payment'));
     }

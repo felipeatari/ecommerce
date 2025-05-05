@@ -17,6 +17,11 @@ class Payment extends Component
     public int|float $subtotal = 0;
     public int|float $cartTotal = 0;
 
+    public function confirm()
+    {
+        dd('ok');
+    }
+
     public function render()
     {
         $this->cartTotal = session()->get('cart.total');
