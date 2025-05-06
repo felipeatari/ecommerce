@@ -28,13 +28,13 @@
         </div>
     </div>
 
-    <div class="w-full h-[300px] my-10 hidden md:block">
+    {{-- <div class="w-full h-[300px] my-10 hidden md:block">
         <img class="w-full h-full object-cover object-center" src="/assets/images/banner-desktop-2.png" alt="">
     </div>
 
     <div class="w-full h-[300px] my-10 block md:hidden">
         <img class="w-full h-full object-cover object-center" src="/assets/images/banner-mobile-2.png" alt="">
-    </div>
+    </div> --}}
 
     @if ($products)
     <x-product.index-products :$products />

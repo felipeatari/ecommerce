@@ -39,12 +39,12 @@
                 <span class="px-2 py-1 font-semibold">Pertence:</span>
                 <select wire:model="parent" class="w-[200px] px-2 py-1 border">
                     <option value="0">selecionar</option>
-                    @foreach ($categories as $categoryItem)
+                    @foreach ($categories as $category)
                     <option
-                        value="{{ $categoryItem->id }}"
-                        wire:key="{{ $categoryItem->id }}"
+                        value="{{ $category->id }}"
+                        wire:key="{{ $category->id }}"
                     >
-                        {{ $categoryItem->name }}
+                        {{ formatCategoryTree(buildCategoryTree($category->id)) }}
                     </option>
                     @endforeach
                 </select>

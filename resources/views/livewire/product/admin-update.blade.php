@@ -35,14 +35,14 @@
         <div class="w-full flex items-center justify-between">
             <div class="flex mt-5 mb-5">
                 <span class="px-2 py-1 font-semibold">Categoria:</span>
-                <select wire:model="categoryId" class="w-[200px] border px-2 py-1">
+                <select wire:model="categoryId" class="min-w-[200px] border px-2 py-1">
                     <option value="{{ null }}">Selecionar</option>
                     @foreach ($category as $id => $name)
                     <option
                         value="{{ $id }}"
                         wire:key="{{ $id }}"
                     >
-                        {{ $name }}
+                        {{ formatCategoryTree(buildCategoryTree($id)) }}
                     </option>
                     @endforeach
                 </select>

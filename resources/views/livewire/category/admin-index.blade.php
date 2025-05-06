@@ -16,6 +16,7 @@
                     <tr>
                         <th class="border py-2 w-[100px]">ID</th>
                         <th class="border py-2">Nome</th>
+                        <th class="border py-2">Arvore</th>
                         <th class="border py-2 w-[100px]">Ações</th>
                     </tr>
                     <tr>
@@ -24,6 +25,9 @@
                         </td>
                         <td class="border p-1">
                             <input type="text" wire:model="searchByName" class="w-full px-2 py-1 border rounded-md">
+                        </td>
+                        <td class="border p-1">
+                            -
                         </td>
                         <td class="border p-1 w-[100px]">
                             <button wire:click="search">
@@ -40,6 +44,9 @@
                         </td>
                         <td class="border p-3">
                             {{ $category->name }}
+                        </td>
+                        <td class="border p-3">
+                            {{ formatCategoryTree(buildCategoryTree($category->id)) }}
                         </td>
                         <td class="border p-3">
                             <a

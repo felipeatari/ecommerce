@@ -36,4 +36,14 @@ class Category extends Model
             $category->save();
         });
     }
+
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent');
+    }
 }

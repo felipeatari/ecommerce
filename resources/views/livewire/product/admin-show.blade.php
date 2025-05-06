@@ -50,7 +50,9 @@
         <div class="w-full flex items-center justify-between my-10">
             <div class="flex">
                 <span class="px-2 py-1 font-semibold">Categoria:</span>
-                <div class="w-[200px] px-2 py-1 border">{{ $category }}</div>
+                <div class="min-w-[200px] px-2 py-1 border">
+                    {{ formatCategoryTree(buildCategoryTree($product->category_id)) }}
+                </div>
             </div>
 
             <div class="flex">

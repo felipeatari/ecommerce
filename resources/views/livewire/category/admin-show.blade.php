@@ -50,10 +50,10 @@
                 </div>
             </div>
 
-            <div class="flex">
+            <div class="w-full flex">
                 <span class="px-2 py-1 font-semibold">Pertence:</span>
-                <div class="w-[200px] px-2 py-1 border">
-                    {{ $this->parent($category->parent) }}
+                <div class="min-w-[200px] px-2 py-1 border">
+                    {{ formatCategoryTree(buildCategoryTree($category->id)) }}
                 </div>
             </div>
         </div>
