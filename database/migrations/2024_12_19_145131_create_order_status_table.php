@@ -19,10 +19,12 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->constrained();
             $table->integer('status');
+            $table->boolean('active')->default(true);
             $table->timestamps();
+            $table->softDeletes('removed_at');
         });
 
-        DB::statement('ALTER TABLE user_addresses AUTO_INCREMENT = 1000;');
+        DB::statement('ALTER TABLE order_statuses AUTO_INCREMENT = 1000;');
     }
 
     /**

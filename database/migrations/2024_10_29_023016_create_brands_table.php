@@ -16,7 +16,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->nullable();
-            $table->boolean('active')->default(true);
             $table->foreignIdFor(User::class, 'created_by')
                 ->nullable()
                 ->cascadeOnDelete()
@@ -32,6 +31,7 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate()
                 ->constrained();
+            $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes('removed_at');
         });

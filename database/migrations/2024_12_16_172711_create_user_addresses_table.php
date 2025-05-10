@@ -28,7 +28,9 @@ return new class extends Migration
             $table->string('complement')->nullable();
             $table->string('country')->default('Brasil');
             $table->string('country_code')->default('BR');
+            $table->boolean('active')->default(true);
             $table->timestamps();
+            $table->softDeletes('removed_at');
         });
 
         DB::statement('ALTER TABLE user_addresses AUTO_INCREMENT = 1000;');

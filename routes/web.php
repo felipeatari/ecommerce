@@ -57,6 +57,10 @@ use App\Livewire\Sku\AdminShow as AdminSkuShow;
 use App\Livewire\Sku\AdminCreate as AdminSkuCreate;
 use App\Livewire\Sku\AdminUpdate as AdminSkuUpdate;
 
+// Gerenciar pedido
+use App\Livewire\Order\AdminIndex as AdminOrderIndex;
+use App\Livewire\Order\AdminShow as AdminOrderShow;
+
 Route::get('/', HomeIndex::class)->name('home.index');
 Route::get('/produto/{slug}', HomeShow::class)->name('home.show');
 Route::get('/buscar', HomeSearch::class)->name('home.search');
@@ -137,5 +141,13 @@ Route::middleware('auth')->group(function($route) {
         Route::get('/ver/{sku}', AdminSkuShow::class)->name('admin.sku.show');
         Route::get('/cadastrar', AdminSkuCreate::class)->name('admin.sku.create');
         Route::get('/editar/{sku}', AdminSkuUpdate::class)->name('admin.sku.update');
+    });
+
+    Route::group([
+        'prefix' => 'admin/order',
+        'middleware' => VerifyUserIsAdmin::class,
+    ], function($route) {
+        Route::get('/listar', AdminOrderIndex::class)->name('admin.order.index');
+        Route::get('/ver/{order}', AdminOrderShow::class)->name('admin.order.show');
     });
 });

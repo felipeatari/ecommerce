@@ -19,6 +19,7 @@ class ProductImage extends Model
         'image_3',
         'image_4',
         'image_5',
+        'active',
         'created_by',
         'updated_by',
         'removed_by',
@@ -32,10 +33,10 @@ class ProductImage extends Model
     {
         parent::boot();
 
-        static::deleting(function ($brand) {
-            $brand->active = false;
-            $brand->removed_by = auth()?->id();
-            $brand->save();
+        static::deleting(function ($productImage) {
+            $productImage->active = false;
+            $productImage->removed_by = auth()?->id();
+            $productImage->save();
         });
     }
 

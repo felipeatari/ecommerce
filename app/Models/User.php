@@ -6,13 +6,16 @@ namespace App\Models;
 
 use App\Enums\UserLevel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
+
+    const DELETED_AT = 'removed_at';
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +30,10 @@ class User extends Authenticatable
         'phone',
         'level',
         'password',
+        'active',
+        'created_by',
+        'updated_by',
+        'removed_by',
     ];
 
     /**
@@ -43,6 +50,10 @@ class User extends Authenticatable
         'level' => UserLevel::class,
     ];
 
+    protected $dates = [
+        'removed_at',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -54,6 +65,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($user) {
+            $user->active = false;
+            $user->removed_by = auth()?->id();
+            $user->save();
+        });
     }
 
     public function address()

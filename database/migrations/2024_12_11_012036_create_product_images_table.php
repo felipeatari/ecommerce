@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('image_3')->nullable();
             $table->string('image_4')->nullable();
             $table->string('image_5')->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes('removed_at');
         });

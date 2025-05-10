@@ -35,6 +35,17 @@ class Sku extends Model
         'removed_at',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($sku) {
+            $sku->active = false;
+            $sku->removed_by = auth()?->id();
+            $sku->save();
+        });
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class);

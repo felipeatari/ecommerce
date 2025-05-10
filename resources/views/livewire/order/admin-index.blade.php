@@ -1,13 +1,7 @@
 <div class="w-full flex items-center flex-col px-3">
-    <div class="bg-white w-full px-8 py-6 shadow-sm">
-        <div class="w-full flex items-center justify-between mb-6">
-            <h1 class="font-semibold">Variações</h1>
-            <a
-                href="{{ route('admin.variation.create') }}"
-                class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1 rounded-md"
-            >
-                Cadastar
-            </a>
+    <div class="w-full bg-white px-8 py-6 shadow-sm">
+        <div class="w-full flex items-center justify-start mb-6">
+            <h1 class="font-semibold">Pedidos</h1>
         </div>
 
         <div class="w-full min-h-[335px]">
@@ -15,23 +9,24 @@
                 <thead class="border-b-2">
                     <tr>
                         <th class="border py-2 w-[100px]">ID</th>
-                        <th class="border py-2">Tipo</th>
-                        <th class="border py-2">Valor</th>
-                        <th class="border py-2 w-[100px]">Ver</th>
+                        <th class="border py-2">Cliente</th>
+                        <th class="border py-2">Status</th>
+                        <th class="border py-2 w-[100px]">Ações</th>
                     </tr>
                     <tr>
                         <td class="border p-1 w-[100px]">
                             <input type="number" min="1000" wire:model="searchByID" class="w-full px-2 py-1 border rounded-md">
                         </td>
                         <td class="border p-1">
-                            <select wire:model.defer="searchByType" class="w-full px-2 py-1 border rounded-md">
-                                <option value="{{ null }}">Selecionar</option>
-                                <option value="size">Tamanho</option>
-                                <option value="color">Cor</option>
-                            </select>
+                            <input type="text" wire:model="searchByClient" class="w-full px-2 py-1 border rounded-md">
                         </td>
                         <td class="border p-1">
-                            <input type="text" wire:model="searchByValue" class="w-full px-2 py-1 border rounded-md">
+                            <select wire:model.defer="searchByOrderStatus" class="w-full px-2 py-1 border rounded-md">
+                                <option value="{{ null }}">Selecionar</option>
+                                @foreach ($selectOrderStatus as $key => $item)
+                                    <option value="{{ $key }}">{{ $item }}</option>
+                                @endforeach
+                            </select>
                         </td>
                         <td class="border p-1 w-[100px]">
                             <button wire:click="search">
@@ -41,21 +36,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($variations as $variation)
+                    @forelse ($orders as $order)
                     <tr class="hover:bg-gray-100">
-                        <td class="border p-3">{{ $variation->id }}</td>
-
-                        @if ($variation->type === 'size')
-                        <td class="border p-3">Tamanho</td>
-                        @elseif($variation->type === 'color')
-                        <td class="border p-3">Cor</td>
-                        @endif
-
-                        <td class="border p-3">{{ $variation->value }}</td>
+                        <td class="border p-3">
+                            {{ $order->id }}
+                        </td>
+                        <td class="border p-3">
+                            {{ $order->user->name }}
+                        </td>
+                        <td class="border p-3">
+                            {{ orderStatus($order->status) }}
+                        </td>
                         <td class="border p-3">
                             <a
                                 class=" flex items-center justify-center"
-                                href="{{ route('admin.variation.show', $variation->id) }}"
+                                href="{{ route('admin.order.show', $order->id) }}"
                             >
                                 <x-icons.show />
                             </a>
@@ -63,10 +58,9 @@
                     </tr>
                     @empty
                     <tr class="hover:bg-gray-100">
-                        <td class="border p-3"> - </td>
-                        <td class="border p-3"> - </td>
-                        <td class="border p-3"> - </td>
-                        <td class="border p-3"> - </td>
+                        <td class="border p-3" colspan="4">
+                            Nenhum registro encontrado
+                        </td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -80,10 +74,10 @@
                 <option value="50">50 por página</option>
             </select>
 
-            @if ($variations and $variations->hasPages())
-            <span>Página {{ $variations->currentPage() }}</span>
+            @if ($orders and $orders->hasPages())
+            <span>Página {{ $orders->currentPage() }}</span>
 
-            <div>{{ $variations->links() }}</div>
+            <div>{{ $orders->links() }}</div>
             @endif
         </div>
     </div>

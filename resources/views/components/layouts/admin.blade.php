@@ -30,6 +30,10 @@
                         'admin.variation.index' => 'Variações',
                         'admin.sku.index' => 'Skus',
                     ];
+
+                    $orders = [
+                        'admin.order.index' => 'Listar',
+                    ];
                 @endphp
 
                 <fieldset class="px-2 my-2">
@@ -52,12 +56,20 @@
 
                 <fieldset class="px-2 my-2">
                     <legend class="w-full font-semibold">Pedido</legend>
-                    {{-- <div class="w-full flex flex-col text-sm">
-                        <a href="/admin/produto/listar" class="w-full hover:bg-gray-200 px-2 py-1">Produtos</a>
-                        <a href="/admin/categoria/listar" class="w-full hover:bg-gray-200 px-2 py-1">Categorias</a>
-                        <a href="#" class="w-full hover:bg-gray-200 px-2 py-1">Skus</a>
-                        <a href="#" class="w-full hover:bg-gray-200 px-2 py-1">Variações</a>
-                    </div> --}}
+                    <div class="w-full flex flex-col text-sm">
+                        @foreach ($orders as $route => $name)
+                            <a
+                                href="{{ route($route) }}"
+                                @class([
+                                    'w-full px-1 py-1',
+                                    'hover:bg-gray-100',
+                                    'bg-gray-300' => $routeName === $route
+                                ])
+                            >
+                                {{ $name }}
+                            </a>
+                        @endforeach
+                    </div>
                 </fieldset>
             </div><!-- Menu -->
 

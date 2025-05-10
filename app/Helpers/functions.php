@@ -78,4 +78,28 @@ if (!function_exists('formatCategoryTree')) {
 
         return $formatCategoryTree;
     }
+
+    if (!function_exists('orderStatus')) {
+    function orderStatus(int $status = 0)
+    {
+        if ($status === 1) {
+            return 'Pendente';
+        }
+        elseif ($status === 2) {
+            return 'Confirmado';
+        }
+        elseif ($status === 3) {
+            return 'Enviado';
+        }
+        elseif ($status === 4) {
+            return 'Completado';
+        }
+        elseif ($status === 5) {
+            return 'Cancelado';
+        }
+        else {
+            return 'Outro';
+        }
+    }
+}
 }

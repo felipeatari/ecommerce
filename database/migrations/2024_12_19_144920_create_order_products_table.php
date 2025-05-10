@@ -36,10 +36,12 @@ return new class extends Migration
             $table->string('color');
             $table->string('size');
             $table->string('image');
+            $table->boolean('active')->default(true);
             $table->timestamps();
+            $table->softDeletes('removed_at');
         });
 
-        DB::statement('ALTER TABLE user_addresses AUTO_INCREMENT = 1000;');
+        DB::statement('ALTER TABLE order_products AUTO_INCREMENT = 1000;');
     }
 
     /**

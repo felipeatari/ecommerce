@@ -39,10 +39,12 @@ return new class extends Migration
             $table->string('delivery_complement')->nullable();
             $table->string('delivery_country')->default('Brasil');
             $table->string('delivery_country_code')->default('BR');
+            $table->boolean('active')->default(true);
             $table->timestamps();
+            $table->softDeletes('removed_at');
         });
 
-        DB::statement('ALTER TABLE user_addresses AUTO_INCREMENT = 1000;');
+        DB::statement('ALTER TABLE orders AUTO_INCREMENT = 1000;');
     }
 
     /**
