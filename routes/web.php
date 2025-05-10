@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BlingController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Middleware\VerifyUserIsAdmin;
 use App\Http\Middleware\VerifyUserIsCustomer;
@@ -21,6 +22,7 @@ use App\Livewire\Account\Login;
 use App\Livewire\Account\Register;
 use App\Livewire\Account\Access;
 
+// Dashboard
 use App\Livewire\Admin\Index as AdminIndex;
 
 // Gerenciar categoria
@@ -60,6 +62,7 @@ use App\Livewire\Sku\AdminUpdate as AdminSkuUpdate;
 // Gerenciar pedido
 use App\Livewire\Order\AdminIndex as AdminOrderIndex;
 use App\Livewire\Order\AdminShow as AdminOrderShow;
+use Illuminate\Support\Facades\Request;
 
 Route::get('/', HomeIndex::class)->name('home.index');
 Route::get('/produto/{slug}', HomeShow::class)->name('home.show');
@@ -76,6 +79,11 @@ Route::group(['prefix' => 'carrinho'], function($route) {
 // Rotas webhook
 Route::group(['prefix' => 'webhook'], function($route) {
     Route::post('/stripe', fn(Request $request) => Log::debug('Webhook Stripe', $request->all()));
+})->withoutMiddleware(VerifyCsrfToken::class);
+
+// Rotas callback
+Route::group(['prefix' => 'callback'], function($route) {
+    Route::get('/bling-auth', [BlingController::class, 'auth']);
 })->withoutMiddleware(VerifyCsrfToken::class);
 
 // Rotas para quem não está autenticado

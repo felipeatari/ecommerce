@@ -71,6 +71,24 @@
                         @endforeach
                     </div>
                 </fieldset>
+
+                <fieldset class="px-2 my-2">
+                    <legend class="w-full font-semibold">Sincronizar Dados</legend>
+                    <div class="w-full flex flex-col text-sm">
+                        {{-- @foreach ($orders as $route => $name)
+                            <a
+                                href="{{ route($route) }}"
+                                @class([
+                                    'w-full px-1 py-1',
+                                    'hover:bg-gray-100',
+                                    'bg-gray-300' => $routeName === $route
+                                ])
+                            >
+                                {{ $name }}
+                            </a>
+                        @endforeach --}}
+                    </div>
+                </fieldset>
             </div><!-- Menu -->
 
             <div class="w-full flex flex-col items-center p-1 text-xs text-gray-900"><!-- Rodapé -->

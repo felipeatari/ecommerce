@@ -9,7 +9,7 @@ use PagarmeApiSDKLib\Authentication\BasicAuthCredentialsBuilder;
 use PagarmeApiSDKLib\PagarmeApiSDKClientBuilder;
 use PagarmeApiSDKLib\Exceptions\ErrorException;
 
-class PaymentPagarmeService
+class PagarmeService
 {
     private string $base;
     private string $user;

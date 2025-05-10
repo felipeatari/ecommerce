@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Services;
 
-use App\Services\PaymentPagarmeService;
+use App\Services\PagarmeService;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -10,7 +10,7 @@ use PagarmeApiSDKLib\Authentication\BasicAuthCredentialsBuilder;
 use PagarmeApiSDKLib\PagarmeApiSDKClientBuilder;
 use Tests\TestCase;
 
-class PaymentPagarmeServiceTest extends TestCase
+class PagarmeServiceTest extends TestCase
 {
     private Client $client;
 
@@ -39,7 +39,7 @@ class PaymentPagarmeServiceTest extends TestCase
 
         // dump(json_decode($response->getBody()->getContents(), true));
 
-        $response = (new PaymentPagarmeService)->cart();
+        $response = (new PagarmeService)->cart();
         dump($response);
 
         $this->assertEquals(200, 200);
