@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Category;
 
+use App\Jobs\SyncCategoryJop;
 use App\Repositories\CategoryRepository;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
@@ -64,6 +65,13 @@ class AdminIndex extends Component
     public function actionModalSyncCategory(?int $categoryId = null)
     {
         $this->categoryId = $categoryId;
+
+        $this->modalSyncCategory = !$this->modalSyncCategory;
+    }
+
+    public function confirmSyncCategory()
+    {
+        SyncCategoryJop::dispatch($this->categoryId);
 
         $this->modalSyncCategory = !$this->modalSyncCategory;
     }

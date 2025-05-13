@@ -8,7 +8,7 @@
             </div>
             <div class="w-full py-5 flex justify-around">
                 <button wire:click="actionModalSyncCategory" class="font-semibold px-3 py-2 bg-gray-900 text-white">Cancelar</button>
-                <a href="#" class="font-semibold px-3 py-2 bg-gray-900 text-white">Confirmar</a>
+                <button wire:click="confirmSyncCategory" class="font-semibold px-3 py-2 bg-gray-900 text-white">Confirmar</button>
             </div>
         </div>
     </div>
