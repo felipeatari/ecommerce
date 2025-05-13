@@ -296,7 +296,7 @@ class Index extends Component
         $this->modalShippingCalculation = false;
     }
 
-    public function closemodalAccountCustomer()
+    public function closeModalAccountCustomer()
     {
         $this->modalAccountCustomer = false;
     }

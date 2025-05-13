@@ -39,10 +39,10 @@ class ServiceTokenService
         }
     }
 
-    public function getOne(?int $id = null)
+    public function getOne(array $filters = [])
     {
         try {
-            $data = $this->serviceTokenRepository->getOne($id);
+            $data = $this->serviceTokenRepository->getOne($filters);
             $item = ServiceTokenDTO::fromModel($data);
 
             return [

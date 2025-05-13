@@ -64,6 +64,9 @@ use App\Livewire\Order\AdminIndex as AdminOrderIndex;
 use App\Livewire\Order\AdminShow as AdminOrderShow;
 use Illuminate\Support\Facades\Request;
 
+// Gerenciar sincronização
+use App\Livewire\Sync\AdminCategory as AdminSyncCategory;
+
 Route::get('/', HomeIndex::class)->name('home.index');
 Route::get('/produto/{slug}', HomeShow::class)->name('home.show');
 Route::get('/buscar', HomeSearch::class)->name('home.search');
@@ -157,5 +160,20 @@ Route::middleware('auth')->group(function($route) {
     ], function($route) {
         Route::get('/listar', AdminOrderIndex::class)->name('admin.order.index');
         Route::get('/ver/{order}', AdminOrderShow::class)->name('admin.order.show');
+    });
+
+    Route::group([
+        'prefix' => 'admin/sync',
+        'middleware' => VerifyUserIsAdmin::class,
+    ], function($route) {
+        Route::get('/categoria', AdminSyncCategory::class)->name('admin.sync.category');
+    });
+
+    Route::group([
+        'prefix' => 'admin/bling',
+        'middleware' => VerifyUserIsAdmin::class,
+    ], function($route) {
+        Route::get('/refresh-token', [BlingController::class, 'refreshToken'])->name('refresh.token');
+        Route::get('/sync-categoria', [BlingController::class, 'syncCategoria'])->name('sync.categoria');
     });
 });

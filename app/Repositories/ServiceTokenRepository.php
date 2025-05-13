@@ -54,7 +54,29 @@ class ServiceTokenRepository
         }
     }
 
-    public function getOne(?int $id = null)
+    public function getOne(array $filters = [])
+    {
+        try {
+            $query = ServiceToken::query()->orderByDesc('id');
+            $query = $this->filters($query, $filters, $this->alloweds);
+
+            $data = $query->first();
+
+            if (! $data) throw new \Exception('Not found', 404);
+
+            return $data;
+        } catch (ModelNotFoundException $exception) {
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+
+            throw $exception;
+        }
+    }
+
+    public function getById(?int $id = null)
     {
         try {
             return ServiceToken::findOrFail($id);

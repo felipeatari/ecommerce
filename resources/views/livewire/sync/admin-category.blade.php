@@ -1,8 +1,10 @@
 <div class="w-full flex items-center flex-col px-3">
+
     <x-sync.category
         :$modalSyncCategory
         :$categoryId
     />
+
     <div class="w-full bg-white px-8 py-6 shadow-sm">
         <div class="w-full flex items-center justify-between mb-6">
             <h1 class="font-semibold">Categorias</h1>
@@ -53,20 +55,9 @@
                             {{ formatCategoryTree(buildCategoryTree($category->id)) }}
                         </td>
                         <td class="border p-3">
-                            <div class="w-full flex justify-center">
-                                <div class="w-[50px] flex justify-between">
-                                    <a
-                                        class=" flex items-center justify-center"
-                                        href="{{ route('admin.category.show', $category->id) }}"
-                                    >
-                                        <x-icons.show />
-                                    </a>
-
-                                    <button wire:click="actionModalSyncCategory({{ $category->id }})">
-                                        <x-icons.sync />
-                                    </button>
-                                </div>
-                            </div>
+                            <button wire:click="actionModalSyncCategory({{ $category->id }})">
+                                <x-icons.sync />
+                            </button>
                         </td>
                     </tr>
                     @empty
@@ -95,3 +86,4 @@
         </div>
     </div>
 </div>
+

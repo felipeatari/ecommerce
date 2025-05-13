@@ -34,6 +34,10 @@
                     $orders = [
                         'admin.order.index' => 'Listar',
                     ];
+
+                    $sync = [
+                        'admin.sync.category' => 'Categorias',
+                    ];
                 @endphp
 
                 <fieldset class="px-2 my-2">
@@ -75,7 +79,7 @@
                 <fieldset class="px-2 my-2">
                     <legend class="w-full font-semibold">Sincronizar Dados</legend>
                     <div class="w-full flex flex-col text-sm">
-                        {{-- @foreach ($orders as $route => $name)
+                        @foreach ($sync as $route => $name)
                             <a
                                 href="{{ route($route) }}"
                                 @class([
@@ -86,7 +90,7 @@
                             >
                                 {{ $name }}
                             </a>
-                        @endforeach --}}
+                        @endforeach
                     </div>
                 </fieldset>
             </div><!-- Menu -->

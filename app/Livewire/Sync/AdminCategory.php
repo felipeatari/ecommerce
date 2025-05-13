@@ -1,24 +1,23 @@
 <?php
 
-namespace App\Livewire\Category;
+namespace App\Livewire\Sync;
 
+use Livewire\Attributes\Computed;
 use App\Repositories\CategoryRepository;
 use App\Services\CategoryService;
-use Illuminate\Http\Request;
-use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class AdminIndex extends Component
+class AdminCategory extends Component
 {
     use WithPagination;
 
     public ?int $searchByID = null;
+    public ?int $categoryId = null;
     public ?string $searchByName = null;
     public array $filters = [];
     public array $columns = ['id', 'name'];
     public bool $filter = false;
-    public ?int $categoryId = null;
     public bool $modalSyncCategory = false;
 
     public $selectedPerPage = 5;
@@ -70,7 +69,7 @@ class AdminIndex extends Component
 
     public function render()
     {
-        return view('livewire.category.admin-index', [
+        return view('livewire.sync.admin-category', [
             'categories' => $this->categories,
         ])->layout('components.layouts.admin');
     }

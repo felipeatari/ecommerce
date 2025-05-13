@@ -54,4 +54,48 @@ class BlingController extends Controller
 
         return response()->json($data);
     }
+
+    public function refreshToken(Request $request)
+    {
+        $headers = [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Accept' => '1.0',
+            'Authorization' => 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret),
+        ];
+
+        $serviceToken = $this->serviceTokenService->getOne(['service' => 'Bling']);
+
+        if ($serviceToken['status'] === 'error') {
+            return response()->json(['error' => 'Não existe token']);
+        }
+
+        $refreshToken = $serviceToken['data']?->refresh_token ?? null;
+
+        $body = [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $refreshToken,
+        ];
+
+        $endpoint = $this->baseUrl . '/oauth/token';
+
+        $blingRefreshToken = $this->blingService->auth($endpoint, $headers, $body);
+
+        if ($blingRefreshToken['status'] === 'error') {
+            return response()->json($blingRefreshToken);
+        }
+
+        $data = $this->serviceTokenService->create([
+            'service' => 'Bling',
+            'access_token' => $blingRefreshToken['data']['access_token'],
+            'refresh_token' => $blingRefreshToken['data']['refresh_token'],
+            'expires_at' => Carbon::now()->addSeconds($blingRefreshToken['data']['expires_in']),
+            'meta' => [],
+        ]);
+
+        return response()->json($data);
+    }
+
+    public function syncCategoria(Request $request)
+    {
+    }
 }
