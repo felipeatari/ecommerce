@@ -173,7 +173,7 @@ Route::middleware('auth')->group(function($route) {
         'prefix' => 'admin/bling',
         'middleware' => VerifyUserIsAdmin::class,
     ], function($route) {
-        Route::get('/refresh-token', [BlingController::class, 'refreshToken'])->name('refresh.token');
-        Route::get('/sync-categoria', [BlingController::class, 'syncCategoria'])->name('sync.categoria');
+        Route::get('/refresh-token', [BlingController::class, 'refreshToken'])->name('bling.refresh.token');
+        Route::get('/sync-categoria/{category_id}', [BlingController::class, 'syncCategoria'])->name('bling.sync.categoria');
     });
 });

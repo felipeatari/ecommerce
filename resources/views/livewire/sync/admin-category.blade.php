@@ -7,13 +7,13 @@
 
     <div class="w-full bg-white px-8 py-6 shadow-sm">
         <div class="w-full flex items-center justify-between mb-6">
-            <h1 class="font-semibold">Categorias</h1>
-            <a
+            <h1 class="font-semibold">Categorias Sincronizadas</h1>
+            {{-- <a
                 href="{{ route('admin.category.create') }}"
                 class="bg-gray-900 hover:bg-gray-700 text-white px-3 py-1 rounded-md"
             >
                 Cadastar
-            </a>
+            </a> --}}
         </div>
 
         <div class="w-full min-h-[335px]">
@@ -21,8 +21,10 @@
                 <thead class="border-b-2">
                     <tr>
                         <th class="border py-2 w-[100px]">ID</th>
-                        <th class="border py-2">Nome</th>
-                        <th class="border py-2">Arvore</th>
+                        <th class="border py-2">Tipo</th>
+                        <th class="border py-2">Erp</th>
+                        <th class="border py-2">ID Erp</th>
+                        <th class="border py-2">Status</th>
                         <th class="border py-2 w-[100px]">Ações</th>
                     </tr>
                     <tr>
@@ -35,6 +37,12 @@
                         <td class="border p-1">
                             -
                         </td>
+                        <td class="border p-1">
+                            -
+                        </td>
+                        <td class="border p-1">
+                            -
+                        </td>
                         <td class="border p-1 w-[100px]">
                             <button wire:click="search">
                                 <x-icons.search />
@@ -43,7 +51,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($categories as $category)
+                    @forelse ([] as $category)
                     <tr class="hover:bg-gray-100">
                         <td class="border p-3">
                             {{ $category->id }}
@@ -62,7 +70,7 @@
                     </tr>
                     @empty
                     <tr class="hover:bg-gray-100">
-                        <td class="border p-3" colspan="3">
+                        <td class="border p-3" colspan="6">
                             Nenhum registro encontrado
                         </td>
                     </tr>

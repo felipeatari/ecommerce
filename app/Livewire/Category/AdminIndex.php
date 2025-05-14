@@ -3,7 +3,6 @@
 namespace App\Livewire\Category;
 
 use App\Jobs\SyncCategoryJop;
-use App\Repositories\CategoryRepository;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
 use Livewire\Attributes\Computed;
@@ -46,7 +45,7 @@ class AdminIndex extends Component
             unset($this->filters['name']);
         }
 
-        $data = (new CategoryService((new CategoryRepository)))->getAll(
+        $data = app(CategoryService::class)->getAll(
             $this->filters,
             $this->selectedPerPage,
             $this->columns

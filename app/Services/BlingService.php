@@ -9,15 +9,39 @@ use Illuminate\Support\Facades\Log;
 
 class BlingService
 {
-    public function auth($enpoint = '', $headers = [], $body = [])
+    public function __construct(
+        private ?string $clientId,
+        private ?string $clientSecret,
+        private ?string $baseUrl,
+        private Client $client,
+    )
     {
-        $client = new Client();
+        $this->clientId = config('bling.client_id');
+        $this->clientSecret = config('bling.client_secret');
+        $this->baseUrl = config('bling.base_url');
+    }
 
+    public function req($enpoint = '', $options = [], $method = '')
+    {
         try {
-            $response = $client->post($enpoint, [
-                'headers' => $headers,
-                'form_params' => $body,
-            ]);
+            if ($method === 'get') {
+                $response = $this->client->get($enpoint, $options);
+            }
+            elseif ($method === 'post') {
+                $response = $this->client->post($enpoint, $options);
+            }
+            elseif ($method === 'put') {
+                $response = $this->client->put($enpoint, $options);
+            }
+            elseif ($method === 'patch') {
+                $response = $this->client->patch($enpoint, $options);
+            }
+            elseif ($method === 'delete') {
+                $response = $this->client->delete($enpoint, $options);
+            }
+            else {
+                throw new Exception('Método HTTP não informado', 400);
+            }
 
             $response = $response->getBody();
             $data = json_decode($response, true);
@@ -43,96 +67,78 @@ class BlingService
         }  catch (Exception $e) {
             return [
                 'status' => 'error',
-                'data' => [
-                    'message' => 'Erro na requisição: ' . $e->getMessage(),
-                ],
+                'message' => $e->getMessage(),
             ];
         }
     }
 
-    public function refreshToken($enpoint = '', $headers = [], $body = [])
+    public function auth($code = '')
     {
-        $client = new Client();
+        $endpoint = $this->baseUrl . '/oauth/token';
 
-        try {
-            $response = $client->post($enpoint, [
-                'headers' => $headers,
-                'form_params' => $body,
-            ]);
+        $headers = [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Accept' => '1.0',
+            'Authorization' => 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret),
+        ];
 
-            $response = $response->getBody();
-            $data = json_decode($response, true);
+        $body = [
+            'grant_type' => 'authorization_code',
+            'code' => $code,
+        ];
 
-            Log::debug('Token Bling', $data);
+        $options = [
+            'headers' => $headers,
+            'form_params' => $body,
+        ];
 
-            return [
-                'status' => 'success',
-                'data' => $data,
-            ];
-        } catch (RequestException $e) {
-            if ($e->hasResponse()) {
-                $response = $e->getResponse()->getBody();
-                $data = json_decode($response, true);
-            } else {
-                $data = [
-                    'message' => 'Erro na requisição: ' . $e->getMessage(),
-                ];
-            }
-
-            return [
-                'status' => 'error',
-                'data' => $data,
-            ];
-        }  catch (Exception $e) {
-            return [
-                'status' => 'error',
-                'data' => [
-                    'message' => 'Erro na requisição: ' . $e->getMessage(),
-                ],
-            ];
-        }
+        return $this->req($endpoint, $options, 'post');
     }
 
-    public function syncCategoria($enpoint = '', $headers = [], $body = [])
+    public function refreshToken(string $refreshToken = '')
     {
-        $client = new Client();
+        $endpoint = $this->baseUrl . '/oauth/token';
 
-        try {
-            $response = $client->post($enpoint, [
-                'headers' => $headers,
-                'form_params' => $body,
-            ]);
+        $headers = [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Accept' => '1.0',
+            'Authorization' => 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret),
+        ];
 
-            $response = $response->getBody();
-            $data = json_decode($response, true);
+        $body = [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $refreshToken,
+        ];
 
-            Log::debug('Token Bling', $data);
+        $options = [
+            'headers' => $headers,
+            'form_params' => $body,
+        ];
 
-            return [
-                'status' => 'success',
-                'data' => $data,
-            ];
-        } catch (RequestException $e) {
-            if ($e->hasResponse()) {
-                $response = $e->getResponse()->getBody();
-                $data = json_decode($response, true);
-            } else {
-                $data = [
-                    'message' => 'Erro na requisição: ' . $e->getMessage(),
-                ];
-            }
+        return $this->req($endpoint, $options, 'post');
+    }
 
-            return [
-                'status' => 'error',
-                'data' => $data,
-            ];
-        }  catch (Exception $e) {
-            return [
-                'status' => 'error',
-                'data' => [
-                    'message' => 'Erro na requisição: ' . $e->getMessage(),
-                ],
-            ];
-        }
+    public function syncCategoria(?int $categoryId)
+    {
+        $endpoint = $this->baseUrl . '/categorias/produtos';
+
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . base64_encode($this->clientId . ':' . $this->clientSecret),
+        ];
+
+        $body = [
+            'descricao' => 'Eletrônicos',
+        ];
+
+        $options = [
+            'headers' => $headers,
+            'form_params' => $body,
+        ];
+
+        dd($body);
+
+        return $this->req($endpoint, $options, 'post');
     }
 }
