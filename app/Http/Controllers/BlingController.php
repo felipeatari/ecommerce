@@ -39,15 +39,7 @@ class BlingController extends Controller
 
     public function refreshToken(Request $request)
     {
-        $serviceToken = $this->serviceTokenService->getOne(['service' => 'Bling']);
-
-        if ($serviceToken['status'] === 'error') {
-            return response()->json(['error' => 'Não existe token']);
-        }
-
-        $refreshToken = $serviceToken['data']?->refresh_token ?? null;
-
-        $blingRefreshToken = $this->blingService->refreshToken($refreshToken);
+        $blingRefreshToken = $this->blingService->refreshToken();
 
         if ($blingRefreshToken['status'] === 'error') {
             return response()->json($blingRefreshToken);

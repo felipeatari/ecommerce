@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Exception;
@@ -14,6 +15,7 @@ class BlingService
         private ?string $clientSecret,
         private ?string $baseUrl,
         private Client $client,
+        private ServiceTokenService $serviceTokenService,
     )
     {
         $this->clientId = config('bling.client_id');
@@ -43,31 +45,38 @@ class BlingService
                 throw new Exception('Método HTTP não informado', 400);
             }
 
-            $response = $response->getBody();
-            $data = json_decode($response, true);
+            $statusCode = $response->getStatusCode();
+            $body = $response->getBody();
+            $data = json_decode($body, true);
 
             return [
                 'status' => 'success',
+                'code' => $statusCode,
                 'data' => $data,
             ];
-        } catch (RequestException $e) {
-            if ($e->hasResponse()) {
-                $response = $e->getResponse()->getBody();
-                $data = json_decode($response, true);
+        } catch (RequestException $exception) {
+            $error = ['status' => 'error'];
+
+            if ($exception->hasResponse()) {
+                $body = $exception->getResponse()->getBody();
+                $data = json_decode($body, true);
+
+                $error['code'] = httpStatusCodeError($exception->getCode());
+                $error['message'] = '';
+                $error['errors'] = $data['error'] ?? $data;
             } else {
-                $data = [
-                    'message' => 'Erro na requisição: ' . $e->getMessage(),
-                ];
+                $error['code'] = httpStatusCodeError($exception->getCode());
+                $error['message'] = 'Erro na requisição: ' . $exception->getMessage();
+                $error['errors'] = [];
             }
 
+            return $error;
+        }  catch (Exception $exception) {
             return [
                 'status' => 'error',
-                'data' => $data,
-            ];
-        }  catch (Exception $e) {
-            return [
-                'status' => 'error',
-                'message' => $e->getMessage(),
+                'code' => httpStatusCodeError($exception->getCode()),
+                'message' => $exception->getMessage(),
+                'errors' => [],
             ];
         }
     }
@@ -97,6 +106,19 @@ class BlingService
 
     public function refreshToken(string $refreshToken = '')
     {
+        if (! $refreshToken) {
+            $serviceToken = $this->serviceTokenService->getOne(['service' => 'Bling']);
+
+            if ($serviceToken['status'] === 'error') {
+                return [
+                    'status' => 'error',
+                    'message' => 'Não existe token',
+                ];
+            }
+
+            $refreshToken = $serviceToken['data']?->refresh_token ?? null;
+        }
+
         $endpoint = $this->baseUrl . '/oauth/token';
 
         $headers = [
@@ -118,8 +140,47 @@ class BlingService
         return $this->req($endpoint, $options, 'post');
     }
 
+    private function verifyToken()
+    {
+        $serviceToken = $this->serviceTokenService->getOne(['service' => 'Bling']);
+
+        if ($serviceToken['status'] === 'error') {
+            return false;
+        }
+
+        $expiresAt = $serviceToken['data']->expires_at;
+        $date = Carbon::parse($expiresAt);
+
+        if ($date->isPast()) {
+            $refreshToken = $serviceToken['data']?->refresh_token;
+
+            $blingRefreshToken = $this->refreshToken($refreshToken);
+
+            if ($blingRefreshToken['status'] === 'error') {
+                return false;
+            }
+
+            $serviceToken = $this->serviceTokenService->create([
+                'service' => 'Bling',
+                'access_token' => $blingRefreshToken['data']['access_token'],
+                'refresh_token' => $blingRefreshToken['data']['refresh_token'],
+                'expires_at' => Carbon::now()->addSeconds($blingRefreshToken['data']['expires_in']),
+                'meta' => [],
+            ]);
+
+            $accessToken = $serviceToken['data']->access_token;
+        } else {
+            $accessToken = $serviceToken['data']->access_token;
+        }
+
+        return $accessToken;
+    }
+
     public function syncCategoria(?int $categoryId)
     {
+        $token = $this->verifyToken();
+        dd($token);
+
         $endpoint = $this->baseUrl . '/categorias/produtos';
 
         $headers = [
