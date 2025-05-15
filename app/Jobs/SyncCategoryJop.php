@@ -29,6 +29,13 @@ class SyncCategoryJop implements ShouldQueue
 
         if (!$category) return;
 
+        $category->erpSyncs()->create([
+            'service' => 'bling',
+            'type' => 'category',
+            'status' => 'processing',
+            'started_at' => now(),
+        ]);
+
         $payload = [
             'descricao' => $category->name,
         ];

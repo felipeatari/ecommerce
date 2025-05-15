@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Category;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -52,7 +53,7 @@ class BlingService
             return [
                 'status' => 'success',
                 'code' => $statusCode,
-                'data' => $data,
+                'data' => $data['data'] ?? $data,
             ];
         } catch (RequestException $exception) {
             $error = ['status' => 'error'];
@@ -176,29 +177,26 @@ class BlingService
         return $accessToken;
     }
 
-    public function syncCategoria(?int $categoryId)
+    public function syncCategoria(Category $category)
     {
         $token = $this->verifyToken();
-        dd($token);
 
         $endpoint = $this->baseUrl . '/categorias/produtos';
 
         $headers = [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . base64_encode($this->clientId . ':' . $this->clientSecret),
+            'Authorization' => 'Bearer ' . $token,
         ];
 
         $body = [
-            'descricao' => 'Eletrônicos',
+            'descricao' => $category->name,
         ];
 
         $options = [
             'headers' => $headers,
-            'form_params' => $body,
+            'json' => $body,
         ];
-
-        dd($body);
 
         return $this->req($endpoint, $options, 'post');
     }

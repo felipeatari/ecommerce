@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\ErpSync;
 use App\Services\ServiceTokenService;
 use App\Services\BlingService;
 use Illuminate\Http\Request;
@@ -58,7 +60,20 @@ class BlingController extends Controller
 
     public function syncCategoria(?int $categoryId)
     {
-        $syncCategoria = $this->blingService->syncCategoria($categoryId);
+        $category = Category::find($categoryId);
+
+        if (!$category) return [];
+
+        $category->erpSyncs()->create([
+            'service' => 'bling',
+            'type' => 'category',
+            'status' => 'processing',
+            'started_at' => now(),
+        ]);
+
+        die;
+
+        $syncCategoria = $this->blingService->syncCategoria($category);
         dd($syncCategoria);
     }
 }

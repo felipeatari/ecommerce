@@ -14,13 +14,18 @@ return new class extends Migration
         Schema::create('erp_syncs', function (Blueprint $table) {
             $table->id();
             $table->string('service');
-            $table->string('syncable_type');
-            $table->unsignedBigInteger('syncable_id');
+            $table->morphs('syncable');
             $table->enum('status', ['processing', 'sucess', 'error'])->default('processing');
-            $table->text('error_message')->nullable();
+            $table->json('response')->nullable();
+            $table->string('sync_id')->nullable();
+            $table->enum('type', ['category', 'brand', 'product', 'variation', 'sku', 'order'])->nullable();
             $table->timestamp('started_at')->nullable();
             $table->timestamp('finished_at')->nullable();
             $table->timestamps();
+
+            $table->index('service');
+            $table->index('status');
+            $table->index('started_at');
         });
     }
 

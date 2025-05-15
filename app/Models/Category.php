@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
@@ -45,5 +46,10 @@ class Category extends Model
     public function children()
     {
         return $this->hasMany(Category::class, 'parent');
+    }
+
+    public function erpSyncs(): MorphMany
+    {
+        return $this->morphMany(ErpSync::class, 'syncable');
     }
 }
