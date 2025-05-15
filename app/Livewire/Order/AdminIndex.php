@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Order;
 
-use App\Repositories\OrderRepository;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 use Livewire\Attributes\Computed;
@@ -51,7 +50,7 @@ class AdminIndex extends Component
             unset($this->filters['status']);
         }
 
-        $data = (new OrderService((new OrderRepository)))->getAll(
+        $data = app(OrderService::class)->getAll(
             $this->filters,
             $this->selectedPerPage,
             $this->columns

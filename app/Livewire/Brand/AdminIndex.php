@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Brand;
 
-use App\Repositories\BrandRepository;
 use App\Services\BrandService;
 use Illuminate\Http\Request;
 use Livewire\Attributes\Computed;
@@ -43,7 +42,7 @@ class AdminIndex extends Component
             unset($this->filters['name']);
         }
 
-        $data = (new BrandService((new BrandRepository)))->getAll(
+        $data = app(BrandService::class)->getAll(
             $this->filters,
             $this->selectedPerPage,
             $this->columns

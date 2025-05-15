@@ -2,8 +2,6 @@
 
 namespace App\Livewire\Sku;
 
-use App\Models\Sku;
-use App\Repositories\SkuRepository;
 use App\Services\SkuService;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -58,7 +56,7 @@ class AdminIndex extends Component
             unset($this->filters['variation_2']);
         }
 
-        $data = (new SkuService(new SkuRepository))->getAll(
+        $data = app(SkuService::class)->getAll(
             $this->filters,
             $this->selectedPerPage,
             $this->columns

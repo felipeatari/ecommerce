@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Product;
 
-use App\Repositories\ProductRepository;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Livewire\Attributes\Computed;
@@ -43,7 +42,7 @@ class AdminIndex extends Component
             unset($this->filters['name']);
         }
 
-        $data = (new ProductService((new ProductRepository)))->getAll(
+        $data = app(ProductService::class)->getAll(
             $this->filters,
             $this->selectedPerPage,
             $this->columns

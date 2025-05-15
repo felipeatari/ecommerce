@@ -2,8 +2,6 @@
 
 namespace App\Livewire\Variation;
 
-use App\Models\Variation;
-use App\Repositories\VariationRepository;
 use App\Services\VariationService;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -49,7 +47,7 @@ class AdminIndex extends Component
             unset($this->filters['value']);
         }
 
-        $data = (new VariationService((new VariationRepository)))->getAll(
+        $data = app(VariationService::class)->getAll(
             $this->filters,
             $this->selectedPerPage,
             $this->columns
